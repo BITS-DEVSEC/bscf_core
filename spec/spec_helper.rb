@@ -1,5 +1,5 @@
 require "simplecov"
-# require "./spec/support/models/shared_examples"
+require "./spec/support/models/shared_examples"
 # require "./spec/support/requests/shared_requests"
 require "rspec/retry"
 
@@ -15,6 +15,9 @@ RSpec.configure do |config|
   config.shared_context_metadata_behavior = :apply_to_host_groups
   config.example_status_persistence_file_path = "spec/examples.txt"
   config.disable_monkey_patching!
+
+  config.formatter = RSpec::Core::Formatters::DocumentationFormatter
+
   config.profile_examples = 10
   config.order = :random
   Kernel.srand config.seed
