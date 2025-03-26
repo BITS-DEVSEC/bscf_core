@@ -8,7 +8,6 @@ module Bscf
         { status: :presence }
       ]
       include_examples("model_shared_spec", :request_for_quotation, attributes)
-
     end
   end
 end
