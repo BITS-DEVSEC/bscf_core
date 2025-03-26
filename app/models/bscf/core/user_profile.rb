@@ -10,6 +10,17 @@ module Bscf
       validates :occupation, presence: true
       validates :source_of_funds, presence: true
       validates :gender, presence: true
+
+      enum :gender, {
+        male: 0,
+        female: 1
+      }
+
+      enum :kyc_status, {
+        pending: 0,
+        approved: 1,
+        rejected: 2
+      }
     end
   end
 end
