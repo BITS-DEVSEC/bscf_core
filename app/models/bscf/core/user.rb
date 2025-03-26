@@ -3,8 +3,16 @@ module Bscf
     class User < ApplicationRecord
       has_secure_password
 
-      validates :first_name, :middle_name, :last_name, :password_digest, presence: true
-      validates :email, :phone_number, uniqueness: true, presence: true
+      has_one :user_profile
+      has_many :user_roles
+      has_many :roles, through: :user_roles
+
+      validates :first_name, presence: true
+      validates :middle_name, presence: true
+      validates :last_name, presence: true
+      validates :password, presence: true
+      validates :phone_number, presence: true, uniqueness: true
+      validates :email, presence: true, uniqueness: true
     end
   end
 end
