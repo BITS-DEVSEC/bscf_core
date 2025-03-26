@@ -50,6 +50,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_26_085741) do
     t.index [ "verified_by_id" ], name: "index_bscf_core_user_profiles_on_verified_by_id"
   end
 
+  create_table "bscf_core_user_roles", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "role_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "role_id" ], name: "index_bscf_core_user_roles_on_role_id"
+    t.index [ "user_id" ], name: "index_bscf_core_user_roles_on_user_id"
+  end
+
   create_table "bscf_core_users", force: :cascade do |t|
     t.string "first_name", null: false
     t.string "middle_name", null: false
