@@ -1,5 +1,5 @@
 namespace :version do
-  task :bump, [:type] do |t, args|
+  task :bump, [ :type ] do |t, args|
     args.with_defaults(type: "patch")
     version_file = "lib/bscf/core/version.rb"
     content = File.read(version_file)
@@ -35,7 +35,7 @@ namespace :version do
     sh "git push origin --tags"
   end
 
-  task release: [:bump, :commit, :tag, :push] do
+  task release: [ :bump, :commit, :tag, :push ] do
     version = File.read("lib/bscf/core/version.rb").match(/VERSION = "(.*?)"/)[1]
     puts "Released version #{version}"
   end

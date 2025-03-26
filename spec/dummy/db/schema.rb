@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_26_081052) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_26_085741) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -63,7 +63,29 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_26_081052) do
     t.index [ "phone_number" ], name: "index_bscf_core_users_on_phone_number", unique: true
   end
 
+  create_table "bscf_core_virtual_accounts", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "account_number", null: false
+    t.string "cbs_account_number", null: false
+    t.decimal "balance", default: "0.0", null: false
+    t.decimal "interest_rate", default: "0.0", null: false
+    t.integer "interest_type", default: 0, null: false
+    t.boolean "active", default: true, null: false
+    t.string "branch_code", null: false
+    t.string "product_scheme", null: false
+    t.string "voucher_type", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "account_number" ], name: "index_bscf_core_virtual_accounts_on_account_number", unique: true
+    t.index [ "branch_code" ], name: "index_bscf_core_virtual_accounts_on_branch_code"
+    t.index [ "cbs_account_number" ], name: "index_bscf_core_virtual_accounts_on_cbs_account_number", unique: true
+    t.index [ "user_id", "account_number" ], name: "index_bscf_core_virtual_accounts_on_user_id_and_account_number"
+    t.index [ "user_id" ], name: "index_bscf_core_virtual_accounts_on_user_id"
+  end
+
   add_foreign_key "bscf_core_user_profiles", "bscf_core_addresses", column: "address_id"
   add_foreign_key "bscf_core_user_profiles", "bscf_core_users", column: "user_id"
   add_foreign_key "bscf_core_user_profiles", "bscf_core_users", column: "verified_by_id"
+  add_foreign_key "bscf_core_virtual_accounts", "bscf_core_users", column: "user_id"
 end
