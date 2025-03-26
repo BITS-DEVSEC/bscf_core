@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_26_103305) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_26_105652) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -31,6 +31,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_26_103305) do
     t.bigint "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "bscf_core_products", force: :cascade do |t|
+    t.string "sku", null: false
+    t.string "name", null: false
+    t.string "description", null: false
+    t.bigint "category_id", null: false
+    t.decimal "base_price", default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "category_id" ], name: "index_bscf_core_products_on_category_id"
+    t.index [ "sku" ], name: "index_bscf_core_products_on_sku", unique: true
   end
 
   create_table "bscf_core_roles", force: :cascade do |t|
@@ -101,6 +113,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_26_103305) do
     t.index [ "user_id" ], name: "index_bscf_core_virtual_accounts_on_user_id"
   end
 
+  add_foreign_key "bscf_core_products", "bscf_core_categories", column: "category_id"
   add_foreign_key "bscf_core_user_profiles", "bscf_core_addresses", column: "address_id"
   add_foreign_key "bscf_core_user_profiles", "bscf_core_users", column: "user_id"
   add_foreign_key "bscf_core_user_profiles", "bscf_core_users", column: "verified_by_id"
