@@ -17,4 +17,26 @@ namespace :version do
 
     puts "Bumped to version #{new_version}"
   end
+
+  task :commit do
+    version_file = "lib/bscf/core/version.rb"
+    version = File.read(version_file).match(/VERSION = "(.*?)"/)[1]
+    sh "git add #{version_file}"
+    sh "git commit -m 'Bump version to #{version}'"
+  end
+
+  task :tag do
+    version = File.read("lib/bscf/core/version.rb").match(/VERSION = "(.*?)"/)[1]
+    sh "git tag v#{version}"
+  end
+
+  task :push do
+    sh "git push origin main"
+    sh "git push origin --tags"
+  end
+
+  task release: [:bump, :commit, :tag, :push] do
+    version = File.read("lib/bscf/core/version.rb").match(/VERSION = "(.*?)"/)[1]
+    puts "Released version #{version}"
+  end
 end
