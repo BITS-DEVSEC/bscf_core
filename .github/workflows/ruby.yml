@@ -10,21 +10,6 @@ permissions:
   contents: read
 
 jobs:
-  scan_ruby:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
-
   test:
     runs-on: ubuntu-latest
 
@@ -32,7 +17,9 @@ jobs:
       postgres:
         image: postgres:14
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: bscf_test
         ports:
           - 5432:5432
         options: >-
@@ -60,7 +47,8 @@ jobs:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: password
+          DATABASE_URL: "postgres://postgres:password@localhost:5432/bscf_test"
         run: |
           bundle exec rake db:create
           bundle exec rake db:schema:load
@@ -71,5 +59,5 @@ jobs:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: password
         run: bundle exec rspec

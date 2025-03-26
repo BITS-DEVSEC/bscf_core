@@ -13,5 +13,8 @@
 
 /.idea
 
+# Coverage related files
 /coverage
-/coverage/assets
+/coverage/**/*
+.coverage
+coverage.*
