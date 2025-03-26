@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_26_085741) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_26_103305) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,6 +21,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_26_085741) do
     t.string "latitude"
     t.string "longitude"
     t.string "house_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "bscf_core_categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "description", null: false
+    t.bigint "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -96,5 +104,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_26_085741) do
   add_foreign_key "bscf_core_user_profiles", "bscf_core_addresses", column: "address_id"
   add_foreign_key "bscf_core_user_profiles", "bscf_core_users", column: "user_id"
   add_foreign_key "bscf_core_user_profiles", "bscf_core_users", column: "verified_by_id"
+  add_foreign_key "bscf_core_user_roles", "bscf_core_roles", column: "role_id"
+  add_foreign_key "bscf_core_user_roles", "bscf_core_users", column: "user_id"
   add_foreign_key "bscf_core_virtual_accounts", "bscf_core_users", column: "user_id"
 end
