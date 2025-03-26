@@ -9,7 +9,6 @@ module Bscf
         { quantity: :presence }
       ]
       include_examples("model_shared_spec", :rfq_item, attributes)
-
     end
   end
 end
