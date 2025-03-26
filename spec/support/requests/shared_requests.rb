@@ -39,7 +39,7 @@ module Bscf
         describe "POST /create" do
           context "with valid params" do
             it "creates a new object" do
-              params = {payload: valid_attributes}
+              params = { payload: valid_attributes }
               expect do
                 post(
                   send("#{controller}_url"),
@@ -58,7 +58,7 @@ module Bscf
 
           context "with invalid params" do
             it "renders a JSON response with errors for the new object" do
-              params = {payload: invalid_attributes}
+              params = { payload: invalid_attributes }
               post(
                 send("#{controller}_url"),
                 params: params,
@@ -82,7 +82,7 @@ module Bscf
           context "with valid params" do
             it "updates the requested object" do
               obj = create(factory)
-              params = {id: obj.to_param, payload: new_attributes}
+              params = { id: obj.to_param, payload: new_attributes }
               put(
                 send("#{controller.singularize}_url", obj),
                 headers: headers,
@@ -103,7 +103,7 @@ module Bscf
           context "with invalid params" do
             it "renders a JSON response with errors for the object" do
               obj = create(factory)
-              params = {id: obj.to_param, payload: invalid_attributes}
+              params = { id: obj.to_param, payload: invalid_attributes }
               put(
                 send("#{controller.singularize}_url", obj),
                 headers: headers,

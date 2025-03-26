@@ -1,3 +1,11 @@
-example_id                 | status | run_time        |
--------------------------- | ------ | --------------- |
-./spec/sample_spec.rb[1:1] | passed | 0.00068 seconds |
+example_id                                | status | run_time        |
+----------------------------------------- | ------ | --------------- |
+./spec/models/bscf/core/user_spec.rb[1:1] | passed | 0.85956 seconds |
+./spec/models/bscf/core/user_spec.rb[1:2] | passed | 0.00552 seconds |
+./spec/models/bscf/core/user_spec.rb[1:3] | passed | 0.00526 seconds |
+./spec/models/bscf/core/user_spec.rb[1:4] | passed | 0.00502 seconds |
+./spec/models/bscf/core/user_spec.rb[1:5] | passed | 0.00439 seconds |
+./spec/models/bscf/core/user_spec.rb[1:6] | passed | 0.0062 seconds  |
+./spec/models/bscf/core/user_spec.rb[1:7] | passed | 0.00612 seconds |
+./spec/models/bscf/core/user_spec.rb[1:8] | passed | 0.00665 seconds |
+./spec/models/bscf/core/user_spec.rb[1:9] | passed | 0.00704 seconds |
