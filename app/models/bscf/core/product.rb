@@ -3,6 +3,9 @@ module Bscf
     class Product < ApplicationRecord
       belongs_to :category
 
+      has_many :rfq_items
+      has_many :request_for_quotations, through: :rfq_items
+
       before_validation :generate_sku, on: :create
 
       validates :sku, presence: true, uniqueness: true
