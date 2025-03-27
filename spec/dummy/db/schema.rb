@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_26_121246) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_27_041651) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -55,6 +55,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_26_121246) do
     t.datetime "updated_at", null: false
     t.index [ "category_id" ], name: "index_bscf_core_products_on_category_id"
     t.index [ "sku" ], name: "index_bscf_core_products_on_sku", unique: true
+  end
+
+  create_table "bscf_core_quotations", force: :cascade do |t|
+    t.bigint "request_for_quotation_id", null: false
+    t.bigint "business_id", null: false
+    t.decimal "price", null: false
+    t.date "delivery_date", null: false
+    t.datetime "valid_until", null: false
+    t.integer "status", default: 0, null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "business_id" ], name: "index_bscf_core_quotations_on_business_id"
+    t.index [ "request_for_quotation_id" ], name: "index_bscf_core_quotations_on_request_for_quotation_id"
   end
 
   create_table "bscf_core_request_for_quotations", force: :cascade do |t|
@@ -164,6 +178,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_26_121246) do
 
   add_foreign_key "bscf_core_businesses", "bscf_core_users", column: "user_id"
   add_foreign_key "bscf_core_products", "bscf_core_categories", column: "category_id"
+  add_foreign_key "bscf_core_quotations", "bscf_core_businesses", column: "business_id"
+  add_foreign_key "bscf_core_quotations", "bscf_core_request_for_quotations", column: "request_for_quotation_id"
   add_foreign_key "bscf_core_request_for_quotations", "bscf_core_users", column: "user_id"
   add_foreign_key "bscf_core_rfq_items", "bscf_core_products", column: "product_id"
   add_foreign_key "bscf_core_rfq_items", "bscf_core_request_for_quotations", column: "request_for_quotation_id"
