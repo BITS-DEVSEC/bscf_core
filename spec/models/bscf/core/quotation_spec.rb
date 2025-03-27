@@ -9,7 +9,10 @@ module Bscf
         { valid_until: :presence },
         { status: :presence },
         { request_for_quotation: :belong_to },
-        { business: :belong_to }
+        { business: :belong_to },
+        { quotation_items: :have_many },
+        { orders: :have_many },
+        { products: :have_many}
       ]
 
       include_examples("model_shared_spec", :quotation, attributes)

@@ -4,6 +4,10 @@ module Bscf
       belongs_to :request_for_quotation
       belongs_to :business
 
+      has_many :quotation_items
+      has_many :products, through: :quotation_items
+      has_many :orders
+
       validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
       validates :delivery_date, presence: true
       validates :valid_until, presence: true
