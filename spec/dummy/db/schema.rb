@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_27_041651) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_27_044020) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -55,6 +55,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_041651) do
     t.datetime "updated_at", null: false
     t.index [ "category_id" ], name: "index_bscf_core_products_on_category_id"
     t.index [ "sku" ], name: "index_bscf_core_products_on_sku", unique: true
+  end
+
+  create_table "bscf_core_quotation_items", force: :cascade do |t|
+    t.bigint "quotation_id", null: false
+    t.bigint "rfq_item_id", null: false
+    t.bigint "product_id", null: false
+    t.integer "quantity", null: false
+    t.decimal "unit_price", null: false
+    t.integer "unit", null: false
+    t.decimal "subtotal", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "product_id" ], name: "index_bscf_core_quotation_items_on_product_id"
+    t.index [ "quotation_id" ], name: "index_bscf_core_quotation_items_on_quotation_id"
+    t.index [ "rfq_item_id" ], name: "index_bscf_core_quotation_items_on_rfq_item_id"
   end
 
   create_table "bscf_core_quotations", force: :cascade do |t|
@@ -178,6 +193,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_041651) do
 
   add_foreign_key "bscf_core_businesses", "bscf_core_users", column: "user_id"
   add_foreign_key "bscf_core_products", "bscf_core_categories", column: "category_id"
+  add_foreign_key "bscf_core_quotation_items", "bscf_core_products", column: "product_id"
+  add_foreign_key "bscf_core_quotation_items", "bscf_core_quotations", column: "quotation_id"
+  add_foreign_key "bscf_core_quotation_items", "bscf_core_rfq_items", column: "rfq_item_id"
   add_foreign_key "bscf_core_quotations", "bscf_core_businesses", column: "business_id"
   add_foreign_key "bscf_core_quotations", "bscf_core_request_for_quotations", column: "request_for_quotation_id"
   add_foreign_key "bscf_core_request_for_quotations", "bscf_core_users", column: "user_id"
