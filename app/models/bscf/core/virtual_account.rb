@@ -43,6 +43,11 @@ module Bscf
         seq = (last_seq + 1).to_s.rjust(6, "0")
         self.account_number = "#{branch_code}#{product_scheme}#{voucher_type}#{seq}"
       end
+
+      has_many :sent_transactions, class_name: "Bscf::Core::VirtualAccountTransaction",
+               foreign_key: "from_account_id", dependent: :restrict_with_error
+      has_many :received_transactions, class_name: "Bscf::Core::VirtualAccountTransaction",
+               foreign_key: "to_account_id", dependent: :restrict_with_error
     end
   end
 end

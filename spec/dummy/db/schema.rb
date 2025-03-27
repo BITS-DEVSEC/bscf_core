@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_26_112449) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_26_121246) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -104,6 +104,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_26_112449) do
     t.index [ "phone_number" ], name: "index_bscf_core_users_on_phone_number", unique: true
   end
 
+  create_table "bscf_core_virtual_account_transactions", force: :cascade do |t|
+    t.bigint "from_account_id", null: false
+    t.bigint "to_account_id", null: false
+    t.decimal "amount", null: false
+    t.integer "transaction_type", null: false
+    t.integer "status", default: 0, null: false
+    t.string "reference_number", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "from_account_id", "reference_number" ], name: "idx_on_from_account_id_reference_number_ecc8e65d8f"
+    t.index [ "from_account_id" ], name: "idx_on_from_account_id_643ea7341d"
+    t.index [ "reference_number" ], name: "idx_on_reference_number_9aa4ea6333", unique: true
+    t.index [ "to_account_id", "reference_number" ], name: "idx_on_to_account_id_reference_number_6f4048491d"
+    t.index [ "to_account_id" ], name: "index_bscf_core_virtual_account_transactions_on_to_account_id"
+  end
+
   create_table "bscf_core_virtual_accounts", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "account_number", null: false
@@ -132,5 +149,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_26_112449) do
   add_foreign_key "bscf_core_user_profiles", "bscf_core_users", column: "verified_by_id"
   add_foreign_key "bscf_core_user_roles", "bscf_core_roles", column: "role_id"
   add_foreign_key "bscf_core_user_roles", "bscf_core_users", column: "user_id"
+  add_foreign_key "bscf_core_virtual_account_transactions", "bscf_core_virtual_accounts", column: "from_account_id"
+  add_foreign_key "bscf_core_virtual_account_transactions", "bscf_core_virtual_accounts", column: "to_account_id"
   add_foreign_key "bscf_core_virtual_accounts", "bscf_core_users", column: "user_id"
 end
