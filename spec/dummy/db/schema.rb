@@ -57,6 +57,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_26_121246) do
     t.index [ "sku" ], name: "index_bscf_core_products_on_sku", unique: true
   end
 
+  create_table "bscf_core_request_for_quotations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "status", default: 0, null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "user_id" ], name: "index_bscf_core_request_for_quotations_on_user_id"
+  end
+
+  create_table "bscf_core_rfq_items", force: :cascade do |t|
+    t.bigint "request_for_quotation_id", null: false
+    t.bigint "product_id", null: false
+    t.float "quantity", null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "product_id" ], name: "index_bscf_core_rfq_items_on_product_id"
+    t.index [ "request_for_quotation_id" ], name: "index_bscf_core_rfq_items_on_request_for_quotation_id"
+  end
+
   create_table "bscf_core_roles", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -144,6 +164,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_26_121246) do
 
   add_foreign_key "bscf_core_businesses", "bscf_core_users", column: "user_id"
   add_foreign_key "bscf_core_products", "bscf_core_categories", column: "category_id"
+  add_foreign_key "bscf_core_request_for_quotations", "bscf_core_users", column: "user_id"
+  add_foreign_key "bscf_core_rfq_items", "bscf_core_products", column: "product_id"
+  add_foreign_key "bscf_core_rfq_items", "bscf_core_request_for_quotations", column: "request_for_quotation_id"
   add_foreign_key "bscf_core_user_profiles", "bscf_core_addresses", column: "address_id"
   add_foreign_key "bscf_core_user_profiles", "bscf_core_users", column: "user_id"
   add_foreign_key "bscf_core_user_profiles", "bscf_core_users", column: "verified_by_id"
