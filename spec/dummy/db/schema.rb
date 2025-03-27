@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_27_102217) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_27_112412) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -43,6 +43,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_102217) do
     t.bigint "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "bscf_core_order_items", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.bigint "product_id", null: false
+    t.bigint "quotation_item_id"
+    t.float "quantity", null: false
+    t.float "unit_price", null: false
+    t.float "subtotal", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "order_id" ], name: "index_bscf_core_order_items_on_order_id"
+    t.index [ "product_id" ], name: "index_bscf_core_order_items_on_product_id"
+    t.index [ "quotation_item_id" ], name: "index_bscf_core_order_items_on_quotation_item_id"
   end
 
   create_table "bscf_core_orders", force: :cascade do |t|
@@ -206,6 +220,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_102217) do
   end
 
   add_foreign_key "bscf_core_businesses", "bscf_core_users", column: "user_id"
+  add_foreign_key "bscf_core_order_items", "bscf_core_orders", column: "order_id"
+  add_foreign_key "bscf_core_order_items", "bscf_core_products", column: "product_id"
+  add_foreign_key "bscf_core_order_items", "bscf_core_quotation_items", column: "quotation_item_id"
   add_foreign_key "bscf_core_orders", "bscf_core_quotations", column: "quotation_id"
   add_foreign_key "bscf_core_orders", "bscf_core_users", column: "ordered_by_id"
   add_foreign_key "bscf_core_orders", "bscf_core_users", column: "ordered_to_id"
