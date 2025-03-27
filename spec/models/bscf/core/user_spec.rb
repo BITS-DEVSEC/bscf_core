@@ -12,7 +12,9 @@ module Bscf
         { email: %i[presence uniqueness] },
         { user_profile: :have_one },
         { user_roles: :have_many },
-        { roles: :have_many }
+        { roles: :have_many },
+        { orders_placed: :have_many },
+        { orders_received: :have_many }
       ]
       include_examples("model_shared_spec", :user, attributes)
     end
