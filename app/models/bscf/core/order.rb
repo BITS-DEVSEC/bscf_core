@@ -1,8 +1,8 @@
 module Bscf
   module Core
     class Order < ApplicationRecord
-      belongs_to :ordered_by, class_name: 'Bscf::Core::User', optional: true
-      belongs_to :ordered_to, class_name: 'Bscf::Core::User', optional: true
+      belongs_to :ordered_by, class_name: "Bscf::Core::User", optional: true
+      belongs_to :ordered_to, class_name: "Bscf::Core::User", optional: true
       belongs_to :quotation, optional: true
 
       validates :order_type, :status, presence: true

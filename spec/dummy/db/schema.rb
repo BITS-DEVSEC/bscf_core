@@ -34,7 +34,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_102217) do
     t.integer "verification_status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_bscf_core_businesses_on_user_id"
+    t.index [ "user_id" ], name: "index_bscf_core_businesses_on_user_id"
   end
 
   create_table "bscf_core_categories", force: :cascade do |t|
@@ -54,9 +54,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_102217) do
     t.float "total_amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["ordered_by_id"], name: "index_bscf_core_orders_on_ordered_by_id"
-    t.index ["ordered_to_id"], name: "index_bscf_core_orders_on_ordered_to_id"
-    t.index ["quotation_id"], name: "index_bscf_core_orders_on_quotation_id"
+    t.index [ "ordered_by_id" ], name: "index_bscf_core_orders_on_ordered_by_id"
+    t.index [ "ordered_to_id" ], name: "index_bscf_core_orders_on_ordered_to_id"
+    t.index [ "quotation_id" ], name: "index_bscf_core_orders_on_quotation_id"
   end
 
   create_table "bscf_core_products", force: :cascade do |t|
@@ -67,8 +67,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_102217) do
     t.decimal "base_price", default: "0.0", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["category_id"], name: "index_bscf_core_products_on_category_id"
-    t.index ["sku"], name: "index_bscf_core_products_on_sku", unique: true
+    t.index [ "category_id" ], name: "index_bscf_core_products_on_category_id"
+    t.index [ "sku" ], name: "index_bscf_core_products_on_sku", unique: true
   end
 
   create_table "bscf_core_quotation_items", force: :cascade do |t|
@@ -81,9 +81,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_102217) do
     t.decimal "subtotal", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["product_id"], name: "index_bscf_core_quotation_items_on_product_id"
-    t.index ["quotation_id"], name: "index_bscf_core_quotation_items_on_quotation_id"
-    t.index ["rfq_item_id"], name: "index_bscf_core_quotation_items_on_rfq_item_id"
+    t.index [ "product_id" ], name: "index_bscf_core_quotation_items_on_product_id"
+    t.index [ "quotation_id" ], name: "index_bscf_core_quotation_items_on_quotation_id"
+    t.index [ "rfq_item_id" ], name: "index_bscf_core_quotation_items_on_rfq_item_id"
   end
 
   create_table "bscf_core_quotations", force: :cascade do |t|
@@ -96,8 +96,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_102217) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["business_id"], name: "index_bscf_core_quotations_on_business_id"
-    t.index ["request_for_quotation_id"], name: "index_bscf_core_quotations_on_request_for_quotation_id"
+    t.index [ "business_id" ], name: "index_bscf_core_quotations_on_business_id"
+    t.index [ "request_for_quotation_id" ], name: "index_bscf_core_quotations_on_request_for_quotation_id"
   end
 
   create_table "bscf_core_request_for_quotations", force: :cascade do |t|
@@ -106,7 +106,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_102217) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_bscf_core_request_for_quotations_on_user_id"
+    t.index [ "user_id" ], name: "index_bscf_core_request_for_quotations_on_user_id"
   end
 
   create_table "bscf_core_rfq_items", force: :cascade do |t|
@@ -116,8 +116,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_102217) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["product_id"], name: "index_bscf_core_rfq_items_on_product_id"
-    t.index ["request_for_quotation_id"], name: "index_bscf_core_rfq_items_on_request_for_quotation_id"
+    t.index [ "product_id" ], name: "index_bscf_core_rfq_items_on_product_id"
+    t.index [ "request_for_quotation_id" ], name: "index_bscf_core_rfq_items_on_request_for_quotation_id"
   end
 
   create_table "bscf_core_roles", force: :cascade do |t|
@@ -140,9 +140,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_102217) do
     t.string "fayda_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["address_id"], name: "index_bscf_core_user_profiles_on_address_id"
-    t.index ["user_id"], name: "index_bscf_core_user_profiles_on_user_id"
-    t.index ["verified_by_id"], name: "index_bscf_core_user_profiles_on_verified_by_id"
+    t.index [ "address_id" ], name: "index_bscf_core_user_profiles_on_address_id"
+    t.index [ "user_id" ], name: "index_bscf_core_user_profiles_on_user_id"
+    t.index [ "verified_by_id" ], name: "index_bscf_core_user_profiles_on_verified_by_id"
   end
 
   create_table "bscf_core_user_roles", force: :cascade do |t|
@@ -150,8 +150,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_102217) do
     t.bigint "role_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["role_id"], name: "index_bscf_core_user_roles_on_role_id"
-    t.index ["user_id"], name: "index_bscf_core_user_roles_on_user_id"
+    t.index [ "role_id" ], name: "index_bscf_core_user_roles_on_role_id"
+    t.index [ "user_id" ], name: "index_bscf_core_user_roles_on_user_id"
   end
 
   create_table "bscf_core_users", force: :cascade do |t|
@@ -163,8 +163,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_102217) do
     t.string "password_digest", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_bscf_core_users_on_email", unique: true
-    t.index ["phone_number"], name: "index_bscf_core_users_on_phone_number", unique: true
+    t.index [ "email" ], name: "index_bscf_core_users_on_email", unique: true
+    t.index [ "phone_number" ], name: "index_bscf_core_users_on_phone_number", unique: true
   end
 
   create_table "bscf_core_virtual_account_transactions", force: :cascade do |t|
@@ -177,11 +177,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_102217) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["from_account_id", "reference_number"], name: "idx_on_from_account_id_reference_number_ecc8e65d8f"
-    t.index ["from_account_id"], name: "idx_on_from_account_id_643ea7341d"
-    t.index ["reference_number"], name: "idx_on_reference_number_9aa4ea6333", unique: true
-    t.index ["to_account_id", "reference_number"], name: "idx_on_to_account_id_reference_number_6f4048491d"
-    t.index ["to_account_id"], name: "index_bscf_core_virtual_account_transactions_on_to_account_id"
+    t.index [ "from_account_id", "reference_number" ], name: "idx_on_from_account_id_reference_number_ecc8e65d8f"
+    t.index [ "from_account_id" ], name: "idx_on_from_account_id_643ea7341d"
+    t.index [ "reference_number" ], name: "idx_on_reference_number_9aa4ea6333", unique: true
+    t.index [ "to_account_id", "reference_number" ], name: "idx_on_to_account_id_reference_number_6f4048491d"
+    t.index [ "to_account_id" ], name: "index_bscf_core_virtual_account_transactions_on_to_account_id"
   end
 
   create_table "bscf_core_virtual_accounts", force: :cascade do |t|
@@ -198,11 +198,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_27_102217) do
     t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["account_number"], name: "index_bscf_core_virtual_accounts_on_account_number", unique: true
-    t.index ["branch_code"], name: "index_bscf_core_virtual_accounts_on_branch_code"
-    t.index ["cbs_account_number"], name: "index_bscf_core_virtual_accounts_on_cbs_account_number", unique: true
-    t.index ["user_id", "account_number"], name: "index_bscf_core_virtual_accounts_on_user_id_and_account_number"
-    t.index ["user_id"], name: "index_bscf_core_virtual_accounts_on_user_id"
+    t.index [ "account_number" ], name: "index_bscf_core_virtual_accounts_on_account_number", unique: true
+    t.index [ "branch_code" ], name: "index_bscf_core_virtual_accounts_on_branch_code"
+    t.index [ "cbs_account_number" ], name: "index_bscf_core_virtual_accounts_on_cbs_account_number", unique: true
+    t.index [ "user_id", "account_number" ], name: "index_bscf_core_virtual_accounts_on_user_id_and_account_number"
+    t.index [ "user_id" ], name: "index_bscf_core_virtual_accounts_on_user_id"
   end
 
   add_foreign_key "bscf_core_businesses", "bscf_core_users", column: "user_id"

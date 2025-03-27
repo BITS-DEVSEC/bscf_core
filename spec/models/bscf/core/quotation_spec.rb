@@ -12,7 +12,7 @@ module Bscf
         { business: :belong_to },
         { quotation_items: :have_many },
         { orders: :have_many },
-        { products: :have_many}
+        { products: :have_many }
       ]
 
       include_examples("model_shared_spec", :quotation, attributes)
