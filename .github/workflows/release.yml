@@ -1,38 +1,38 @@
-name: Release Ruby Gem
+name: Release
 
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*'
 
 jobs:
   release:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.2"
+          ruby-version: '3.2.8'
           bundler-cache: true
 
       - name: Configure Bundler
-        run: bundle config set --local frozen false
+        run: |
+          bundle config set --local deployment false
+          bundle config set --local path 'vendor/bundle'
 
       - name: Install dependencies
         run: bundle install
 
       - name: Build gem
-        run: gem build bscf-core.gemspec
+        run: bundle exec rake build
 
-      - name: Publish to RubyGems
+      - name: Push to RubyGems
         env:
           RUBYGEMS_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
         run: |
-          mkdir -p ~/.gem
-          echo "---\n:rubygems_api_key: $RUBYGEMS_API_KEY" > ~/.gem/credentials
-          chmod 0600 ~/.gem/credentials
-          gem push bscf-core-*.gem
+          mkdir -p $HOME/.gem
+          echo -e "---\n:rubygems_api_key: ${RUBYGEMS_API_KEY}" > $HOME/.gem/credentials
+          chmod 0600 $HOME/.gem/credentials
+          gem push pkg/*.gem
