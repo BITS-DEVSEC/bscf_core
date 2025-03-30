@@ -19,6 +19,9 @@ jobs:
           ruby-version: "3.2"
           bundler-cache: true
 
+      - name: Configure Bundler
+        run: bundle config set --local frozen false
+
       - name: Install dependencies
         run: bundle install
 
