@@ -21,6 +21,7 @@ jobs:
         run: |
           bundle config set --local deployment false
           bundle config set --local path 'vendor/bundle'
+          bundle config set --local frozen false
 
       - name: Install dependencies
         run: bundle install
