@@ -4,6 +4,7 @@ module Bscf
       has_secure_password
 
       has_one :user_profile
+      has_one :user_role
       has_many :user_roles
       has_many :roles, through: :user_roles
 

@@ -10,7 +10,6 @@
 /spec/dummy/tmp/
 /spec/example.txt
 *.gem
-
 /.idea
 
 # Coverage related files
@@ -18,3 +17,5 @@
 /coverage/**/*
 .coverage
 coverage.*
+
+.env

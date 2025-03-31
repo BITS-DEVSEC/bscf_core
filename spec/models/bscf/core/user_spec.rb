@@ -11,6 +11,7 @@ module Bscf
         { phone_number: %i[presence uniqueness] },
         { email: %i[presence uniqueness] },
         { user_profile: :have_one },
+        { user_role: :have_one },
         { user_roles: :have_many },
         { roles: :have_many },
         { orders_placed: :have_many },
