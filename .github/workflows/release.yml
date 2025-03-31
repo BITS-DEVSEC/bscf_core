@@ -24,7 +24,7 @@ jobs:
           bundle config set --local frozen false
 
       - name: Install dependencies
-        run: bundle install
+        run: bundle install --no-deployment --no-frozen
 
       - name: Build gem
         run: bundle exec rake build
