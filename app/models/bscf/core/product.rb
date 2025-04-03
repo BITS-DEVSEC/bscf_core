@@ -2,7 +2,13 @@ module Bscf
   module Core
     class Product < ApplicationRecord
       belongs_to :category
+      has_one_attached :thumbnail
+      has_many_attached :images
 
+      validates :sku, presence: true, uniqueness: true
+      validates :name, presence: true
+      validates :description, presence: true
+      validates :base_price, presence: true
       has_many :rfq_items
       has_many :request_for_quotations, through: :rfq_items
 
