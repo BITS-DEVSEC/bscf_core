@@ -396,6 +396,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  activestorage
   bscf-core!
   database_cleaner-active_record
   debug (>= 1.0.0)

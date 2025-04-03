@@ -13,6 +13,8 @@ gem "sentry-rails"
 gem "sentry-ruby"
 gem "stackprof"
 
+gem "activestorage"
+
 # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
 gem "rubocop-rails-omakase", require: false
 
