@@ -2,29 +2,50 @@ name: Release
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - main
+    paths:
+      - 'lib/bscf/core/version.rb'
 
 jobs:
+  check_version:
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get new version
+        id: get_version
+        run: |
+          VERSION=$(grep -r "VERSION = " lib/bscf/core/version.rb | cut -d '"' -f 2)
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Create tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a "v${{ steps.get_version.outputs.version }}" -m "Release v${{ steps.get_version.outputs.version }}"
+          git push origin "v${{ steps.get_version.outputs.version }}"
+
   release:
+    needs: check_version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: "v${{ needs.check_version.outputs.new_version }}"
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.4.2
-          bundler-cache: false
-
-      - name: Configure Bundler
-        run: |
-          bundle config set --local deployment false
-          bundle config set --local path 'vendor/bundle'
-          bundle config set --local frozen false
+          bundler-cache: true
 
       - name: Install dependencies
-        run: bundle install --no-deployment --no-frozen
+        run: bundle install
 
       - name: Build gem
         run: bundle exec rake build
