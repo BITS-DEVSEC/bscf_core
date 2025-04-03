@@ -11,7 +11,6 @@ module Bscf
         { is_active: :presence }
       ]
       include_examples("model_shared_spec", :marketplace_listing, attributes)
-
     end
   end
 end
