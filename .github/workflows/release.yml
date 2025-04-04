@@ -8,6 +8,9 @@ on:
     paths:
       - 'lib/bscf/core/version.rb'
 
+permissions:
+  contents: write
+
 jobs:
   check_version:
     runs-on: ubuntu-latest
@@ -25,8 +28,6 @@ jobs:
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Create tag
-        env:
-            REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
