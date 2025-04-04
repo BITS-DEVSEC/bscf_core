@@ -4,7 +4,6 @@ FactoryBot.define do
     sequence(:sku) { |n| "SKU-#{n}" }
     name { Faker::Commerce.product_name }
     description { Faker::Lorem.paragraph }
-    base_price { Faker::Commerce.price(range: 10..100.0) }
 
     after(:build) do |product|
       product.thumbnail.attach(

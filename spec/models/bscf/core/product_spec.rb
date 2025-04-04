@@ -7,7 +7,6 @@ module Bscf
         { sku: [ :presence, :uniqueness ] },
         { name: :presence },
         { description: :presence },
-        { base_price: :presence },
         { category: :belong_to }
       ]
 
