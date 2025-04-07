@@ -12,6 +12,7 @@ gem "propshaft"
 gem "sentry-rails"
 gem "sentry-ruby"
 gem "stackprof"
+gem "image_processing"
 
 # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
 gem "rubocop-rails-omakase", require: false
