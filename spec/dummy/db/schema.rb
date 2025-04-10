@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_03_194629) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_10_181145) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -101,8 +101,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_03_194629) do
 
   create_table "bscf_core_delivery_orders", force: :cascade do |t|
     t.bigint "order_id", null: false
-    t.bigint "delivery_address_id", null: false
-    t.string "contact_phone", null: false
+    t.bigint "dropoff_address_id", null: false
+    t.string "driver_phone", null: false
     t.text "delivery_notes"
     t.datetime "estimated_delivery_time", null: false
     t.datetime "delivery_start_time"
@@ -110,8 +110,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_03_194629) do
     t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index [ "delivery_address_id" ], name: "index_bscf_core_delivery_orders_on_delivery_address_id"
+    t.bigint "driver_id"
+    t.bigint "pickup_address_id", null: false
+    t.string "buyer_phone", null: false
+    t.string "seller_phone", null: false
+    t.datetime "actual_delivery_time"
+    t.index [ "driver_id" ], name: "index_bscf_core_delivery_orders_on_driver_id"
+    t.index [ "dropoff_address_id" ], name: "index_bscf_core_delivery_orders_on_dropoff_address_id"
     t.index [ "order_id" ], name: "index_bscf_core_delivery_orders_on_order_id"
+    t.index [ "pickup_address_id" ], name: "index_bscf_core_delivery_orders_on_pickup_address_id"
   end
 
   create_table "bscf_core_marketplace_listings", force: :cascade do |t|
@@ -265,6 +272,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_03_194629) do
     t.index [ "phone_number" ], name: "index_bscf_core_users_on_phone_number", unique: true
   end
 
+  create_table "bscf_core_vehicles", force: :cascade do |t|
+    t.bigint "driver_id"
+    t.string "plate_number", null: false
+    t.string "vehicle_type", null: false
+    t.string "brand", null: false
+    t.string "model", null: false
+    t.integer "year", null: false
+    t.string "color", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "driver_id" ], name: "index_bscf_core_vehicles_on_driver_id"
+    t.index [ "plate_number" ], name: "index_bscf_core_vehicles_on_plate_number", unique: true
+  end
+
   create_table "bscf_core_virtual_account_transactions", force: :cascade do |t|
     t.bigint "from_account_id", null: false
     t.bigint "to_account_id", null: false
@@ -323,8 +344,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_03_194629) do
   add_foreign_key "bscf_core_delivery_order_items", "bscf_core_delivery_orders", column: "delivery_order_id"
   add_foreign_key "bscf_core_delivery_order_items", "bscf_core_order_items", column: "order_item_id"
   add_foreign_key "bscf_core_delivery_order_items", "bscf_core_products", column: "product_id"
-  add_foreign_key "bscf_core_delivery_orders", "bscf_core_addresses", column: "delivery_address_id"
+  add_foreign_key "bscf_core_delivery_orders", "bscf_core_addresses", column: "dropoff_address_id"
+  add_foreign_key "bscf_core_delivery_orders", "bscf_core_addresses", column: "pickup_address_id"
   add_foreign_key "bscf_core_delivery_orders", "bscf_core_orders", column: "order_id", on_update: :cascade, on_delete: :cascade
+  add_foreign_key "bscf_core_delivery_orders", "bscf_core_users", column: "driver_id"
   add_foreign_key "bscf_core_marketplace_listings", "bscf_core_addresses", column: "address_id"
   add_foreign_key "bscf_core_marketplace_listings", "bscf_core_users", column: "user_id"
   add_foreign_key "bscf_core_order_items", "bscf_core_orders", column: "order_id"
@@ -347,6 +370,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_03_194629) do
   add_foreign_key "bscf_core_user_profiles", "bscf_core_users", column: "verified_by_id"
   add_foreign_key "bscf_core_user_roles", "bscf_core_roles", column: "role_id"
   add_foreign_key "bscf_core_user_roles", "bscf_core_users", column: "user_id"
+  add_foreign_key "bscf_core_vehicles", "bscf_core_users", column: "driver_id"
   add_foreign_key "bscf_core_virtual_account_transactions", "bscf_core_virtual_accounts", column: "from_account_id"
   add_foreign_key "bscf_core_virtual_account_transactions", "bscf_core_virtual_accounts", column: "to_account_id"
   add_foreign_key "bscf_core_virtual_accounts", "bscf_core_users", column: "user_id"
