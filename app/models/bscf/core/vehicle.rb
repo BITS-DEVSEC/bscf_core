@@ -1,6 +1,6 @@
 module Bscf::Core
   class Vehicle < ApplicationRecord
-    belongs_to :driver, class_name: 'Bscf::Core::User', optional: true
+    belongs_to :driver, class_name: "Bscf::Core::User", optional: true
 
     validates :plate_number, presence: true, uniqueness: { case_sensitive: false }
     validates :vehicle_type, presence: true

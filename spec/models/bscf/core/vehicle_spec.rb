@@ -15,7 +15,7 @@ RSpec.describe Bscf::Core::Vehicle, type: :model do
     it { should validate_presence_of(:model) }
     it { should validate_presence_of(:year) }
     it { should validate_presence_of(:color) }
-    
+
     it { should validate_numericality_of(:year).only_integer }
     it { should validate_numericality_of(:year).is_greater_than(1900) }
     it { should validate_numericality_of(:year).is_less_than_or_equal_to(Time.current.year) }

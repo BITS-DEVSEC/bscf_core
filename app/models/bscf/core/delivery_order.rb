@@ -1,30 +1,29 @@
 module Bscf::Core
   class DeliveryOrder < ApplicationRecord
     belongs_to :order
-    belongs_to :delivery_address, class_name: "Bscf::Core::Address"
+    belongs_to :pickup_address, class_name: "Bscf::Core::Address"
+    belongs_to :dropoff_address, class_name: "Bscf::Core::Address"
+    belongs_to :driver, class_name: "Bscf::Core::User", optional: true
 
     has_many :delivery_order_items, dependent: :destroy
     has_many :order_items, through: :delivery_order_items
     has_many :products, through: :delivery_order_items
 
-    attribute :delivery_start_time, :datetime
-    attribute :delivery_end_time, :datetime
-    attribute :actual_delivery_time, :datetime
-
-    validates :contact_phone, :status, :estimated_delivery_time, presence: true
+    validates :buyer_phone, :seller_phone, :driver_phone,
+              :status, :estimated_delivery_time, presence: true
     validate :end_time_after_start_time, if: -> { delivery_start_time.present? && delivery_end_time.present? }
 
     before_save :update_delivery_times
     before_save :calculate_actual_delivery_time
-
     after_save :sync_items_status, if: :saved_change_to_status?
 
     enum :status, {
       pending: 0,
       in_transit: 1,
-      delivered: 2,
-      failed: 3,
-      cancelled: 4
+      picked_up: 2,
+      delivered: 3,
+      failed: 4,
+      cancelled: 5
     }
 
     def delivery_duration
