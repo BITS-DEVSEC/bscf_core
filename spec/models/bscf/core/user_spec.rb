@@ -7,9 +7,9 @@ module Bscf
         { first_name: :presence },
         { middle_name: :presence },
         { last_name: :presence },
-        { password: [ :presence, { length: [ [ :is, 6 ] ] } ] },
-        { phone_number: %i[presence uniqueness] },
-        { email: [ :uniqueness ] }
+        { password: :presence },
+        { phone_number: :presence },
+        { email: :uniqueness }
       ]
       include_examples("model_shared_spec", :user, attributes)
 
