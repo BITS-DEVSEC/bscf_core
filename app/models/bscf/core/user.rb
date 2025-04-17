@@ -14,9 +14,23 @@ module Bscf
       validates :first_name, presence: true
       validates :middle_name, presence: true
       validates :last_name, presence: true
-      validates :password, presence: true
-      validates :phone_number, presence: true, uniqueness: true
-      validates :email, presence: true, uniqueness: true
+      validates :phone_number, presence: true
+      validates :phone_number, uniqueness: true
+      validates :email, uniqueness: true, allow_nil: true
+      validates :password,
+                presence: true,
+                length: { is: 6 },
+                format: {
+                  with: /\A\d{6}\z/,
+                  message: "must be exactly 6 digits"
+                },
+                if: :password_required?
+
+      private
+
+      def password_required?
+        new_record? || password.present?
+      end
     end
   end
 end
