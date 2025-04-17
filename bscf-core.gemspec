@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
 
 
   spec.add_dependency "active_model_serializers"
-  spec.add_dependency "ancestry", "~> 4.1.0"
+  spec.add_dependency "ancestry", ">= 4.1", "< 4.4"
 
   spec.add_dependency "bcrypt", "~> 3.1"
   spec.add_dependency "httparty"
