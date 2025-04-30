@@ -17,7 +17,7 @@ module Bscf::Core
     before_save :update_delivery_times
     before_save :calculate_actual_delivery_time
 
-    after_save :sync_items_status, if: :saved_change_to_status?
+    # after_save :sync_items_status, if: :saved_change_to_status?
 
     enum :status, {
       pending: 0,
