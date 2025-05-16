@@ -23,8 +23,10 @@ module Bscf::Core
       in_transit: 1,
       picked_up: 2,
       delivered: 3,
-      failed: 4,
-      cancelled: 5
+      received: 4,
+      paid: 5,
+      failed: 6,
+      cancelled: 7
     }
 
     def delivery_duration
