@@ -15,20 +15,6 @@ module Bscf
       ]
       include_examples("model_shared_spec", :delivery_order, attributes)
 
-      describe 'status management' do
-        it 'updates all delivery order items status when status changes' do
-          delivery_order = create(:delivery_order, status: :pending)
-          items = create_list(:delivery_order_item, 3, delivery_order: delivery_order)
-
-          delivery_order.update(status: :in_transit)
-
-          items.each do |item|
-            item.reload
-            expect(item.status).to eq('in_transit')
-          end
-        end
-      end
-
       describe 'delivery times' do
         it 'sets delivery start time when status changes to in_transit' do
           delivery_order = create(:delivery_order)

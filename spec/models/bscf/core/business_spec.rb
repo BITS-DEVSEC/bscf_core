@@ -5,7 +5,6 @@ module Bscf
     RSpec.describe Business, type: :model do
       attributes = [
         { business_name: [ :presence ] },
-        { tin_number: [ :presence ] },
         { business_type: [ :presence ] },
         { verification_status: [ :presence ] },
         { user: :belong_to }

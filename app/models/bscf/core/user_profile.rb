@@ -7,8 +7,6 @@ module Bscf
 
       validates :date_of_birth, presence: true
       validates :nationality, presence: true
-      validates :occupation, presence: true
-      validates :source_of_funds, presence: true
       validates :gender, presence: true
 
       enum :gender, {
