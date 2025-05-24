@@ -1,6 +1,6 @@
 module Bscf::Core
   class DeliveryOrder < ApplicationRecord
-    belongs_to :order
+    has_many :orders
     belongs_to :pickup_address, class_name: "Bscf::Core::Address"
     belongs_to :dropoff_address, class_name: "Bscf::Core::Address"
     belongs_to :driver, class_name: "Bscf::Core::User", optional: true

@@ -1,6 +1,5 @@
 FactoryBot.define do
   factory :delivery_order, class: 'Bscf::Core::DeliveryOrder' do
-    association :order
     association :pickup_address, factory: :address
     association :dropoff_address, factory: :address
     driver { nil }
@@ -29,6 +28,12 @@ FactoryBot.define do
       status { :delivered }
       delivery_start_time { 2.hours.ago }
       delivery_end_time { Time.current }
+    end
+
+    trait :with_orders do
+      after(:create) do |delivery_order|
+        create_list(:order, 2, delivery_order: delivery_order)
+      end
     end
   end
 end
