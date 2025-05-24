@@ -4,7 +4,7 @@ module Bscf
       belongs_to :user
 
       validates :business_name, presence: true
-      validates :tin_number, presence: true, uniqueness: { case_sensitive: false }
+      validates :tin_number, uniqueness: { case_sensitive: false }
       validates :business_type, presence: true
       validates :verification_status, presence: true
 

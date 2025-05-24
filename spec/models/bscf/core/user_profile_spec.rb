@@ -6,8 +6,6 @@ module Bscf
       attributes = [
         { date_of_birth: :presence },
         { nationality: :presence },
-        { occupation: :presence },
-        { source_of_funds: :presence },
         { gender: :presence },
         { user: :belong_to },
         { address: :belong_to }
