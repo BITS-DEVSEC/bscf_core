@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_22_051336) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_21_084935) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -135,15 +135,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_22_051336) do
     t.datetime "updated_at", null: false
     t.index ["address_id"], name: "index_bscf_core_marketplace_listings_on_address_id"
     t.index ["user_id"], name: "index_bscf_core_marketplace_listings_on_user_id"
-  end
-
-  create_table "bscf_core_order_allocations", force: :cascade do |t|
-    t.bigint "delivery_order_id", null: false
-    t.bigint "order_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["delivery_order_id"], name: "index_bscf_core_order_allocations_on_delivery_order_id"
-    t.index ["order_id"], name: "index_bscf_core_order_allocations_on_order_id"
   end
 
   create_table "bscf_core_order_items", force: :cascade do |t|
@@ -332,23 +323,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_22_051336) do
     t.index ["cbs_account_number"], name: "index_bscf_core_virtual_accounts_on_cbs_account_number", unique: true
     t.index ["user_id", "account_number"], name: "index_bscf_core_virtual_accounts_on_user_id_and_account_number"
     t.index ["user_id"], name: "index_bscf_core_virtual_accounts_on_user_id"
-  end
-
-  create_table "bscf_core_vouchers", force: :cascade do |t|
-    t.bigint "virtual_account_id", null: false
-    t.string "full_name", null: false
-    t.string "phone_number", null: false
-    t.decimal "amount", null: false
-    t.text "reason"
-    t.integer "status", default: 0, null: false
-    t.string "voucher_number", null: false
-    t.datetime "expires_at"
-    t.datetime "redeemed_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["phone_number"], name: "index_bscf_core_vouchers_on_phone_number"
-    t.index ["virtual_account_id"], name: "index_bscf_core_vouchers_on_virtual_account_id"
-    t.index ["voucher_number"], name: "index_bscf_core_vouchers_on_voucher_number", unique: true
   end
 
   create_table "bscf_core_wholesaler_products", force: :cascade do |t|
