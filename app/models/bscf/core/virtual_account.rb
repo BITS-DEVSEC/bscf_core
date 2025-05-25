@@ -17,6 +17,10 @@ module Bscf
       validates :voucher_type, presence: true, inclusion: { in: VOUCHER_TYPES }
       validates :status, presence: true
       validate :available_balance_sufficient
+      has_many :sent_transactions, class_name: "Bscf::Core::VirtualAccountTransaction",
+            foreign_key: "from_account_id", dependent: :restrict_with_error
+      has_many :received_transactions, class_name: "Bscf::Core::VirtualAccountTransaction",
+            foreign_key: "to_account_id", dependent: :restrict_with_error
 
       enum :interest_type, {
         simple: 0,
@@ -77,10 +81,17 @@ module Bscf
         self.account_number = "#{branch_code}#{product_scheme}#{voucher_type}#{seq}"
       end
 
-      has_many :sent_transactions, class_name: "Bscf::Core::VirtualAccountTransaction",
-               foreign_key: "from_account_id", dependent: :restrict_with_error
-      has_many :received_transactions, class_name: "Bscf::Core::VirtualAccountTransaction",
-               foreign_key: "to_account_id", dependent: :restrict_with_error
+      def transfer_to!(to_account, amount)
+        transaction = VirtualAccountTransaction.new(
+          from_account: self,
+          to_account: to_account,
+          amount: amount,
+          transaction_type: :transfer
+        )
+        
+        transaction.process!
+      end
     end
   end
 end
+

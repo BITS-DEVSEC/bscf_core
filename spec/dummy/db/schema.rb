@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_24_073441) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_24_151346) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -114,7 +114,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_073441) do
     t.string "buyer_phone", null: false
     t.string "seller_phone", null: false
     t.datetime "actual_delivery_time"
-    t.decimal "delivery_price", precision: 10, scale: 2, default: "0.0", null: false
+    t.float "delivery_price"
     t.index ["driver_id"], name: "index_bscf_core_delivery_orders_on_driver_id"
     t.index ["dropoff_address_id"], name: "index_bscf_core_delivery_orders_on_dropoff_address_id"
     t.index ["pickup_address_id"], name: "index_bscf_core_delivery_orders_on_pickup_address_id"
@@ -133,15 +133,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_073441) do
     t.datetime "updated_at", null: false
     t.index ["address_id"], name: "index_bscf_core_marketplace_listings_on_address_id"
     t.index ["user_id"], name: "index_bscf_core_marketplace_listings_on_user_id"
-  end
-
-  create_table "bscf_core_order_allocations", force: :cascade do |t|
-    t.bigint "delivery_order_id", null: false
-    t.bigint "order_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["delivery_order_id"], name: "index_bscf_core_order_allocations_on_delivery_order_id"
-    t.index ["order_id"], name: "index_bscf_core_order_allocations_on_order_id"
   end
 
   create_table "bscf_core_order_items", force: :cascade do |t|
@@ -297,8 +288,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_073441) do
   end
 
   create_table "bscf_core_virtual_account_transactions", force: :cascade do |t|
-    t.bigint "from_account_id"
-    t.bigint "to_account_id"
+    t.bigint "from_account_id", null: false
+    t.bigint "to_account_id", null: false
     t.decimal "amount", null: false
     t.integer "transaction_type", null: false
     t.integer "status", default: 0, null: false
@@ -327,6 +318,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_073441) do
     t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "locked_amount"
     t.index ["account_number"], name: "index_bscf_core_virtual_accounts_on_account_number", unique: true
     t.index ["branch_code"], name: "index_bscf_core_virtual_accounts_on_branch_code"
     t.index ["cbs_account_number"], name: "index_bscf_core_virtual_accounts_on_cbs_account_number", unique: true
@@ -335,20 +327,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_073441) do
   end
 
   create_table "bscf_core_vouchers", force: :cascade do |t|
-    t.bigint "virtual_account_id", null: false
     t.string "full_name", null: false
     t.string "phone_number", null: false
     t.decimal "amount", null: false
-    t.text "reason"
+    t.string "reason"
+    t.string "code", null: false
     t.integer "status", default: 0, null: false
-    t.string "voucher_number", null: false
     t.datetime "expires_at"
+    t.bigint "issued_by_id", null: false
     t.datetime "redeemed_at"
+    t.datetime "returned_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["phone_number"], name: "index_bscf_core_vouchers_on_phone_number"
-    t.index ["virtual_account_id"], name: "index_bscf_core_vouchers_on_virtual_account_id"
-    t.index ["voucher_number"], name: "index_bscf_core_vouchers_on_voucher_number", unique: true
+    t.index ["code"], name: "index_bscf_core_vouchers_on_code"
+    t.index ["issued_by_id"], name: "index_bscf_core_vouchers_on_issued_by_id"
   end
 
   create_table "bscf_core_wholesaler_products", force: :cascade do |t|
@@ -376,8 +368,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_073441) do
   add_foreign_key "bscf_core_delivery_orders", "bscf_core_users", column: "driver_id"
   add_foreign_key "bscf_core_marketplace_listings", "bscf_core_addresses", column: "address_id"
   add_foreign_key "bscf_core_marketplace_listings", "bscf_core_users", column: "user_id"
-  add_foreign_key "bscf_core_order_allocations", "bscf_core_delivery_orders", column: "delivery_order_id"
-  add_foreign_key "bscf_core_order_allocations", "bscf_core_orders", column: "order_id"
   add_foreign_key "bscf_core_order_items", "bscf_core_orders", column: "order_id"
   add_foreign_key "bscf_core_order_items", "bscf_core_products", column: "product_id"
   add_foreign_key "bscf_core_order_items", "bscf_core_quotation_items", column: "quotation_item_id"
@@ -403,7 +393,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_24_073441) do
   add_foreign_key "bscf_core_virtual_account_transactions", "bscf_core_virtual_accounts", column: "from_account_id"
   add_foreign_key "bscf_core_virtual_account_transactions", "bscf_core_virtual_accounts", column: "to_account_id"
   add_foreign_key "bscf_core_virtual_accounts", "bscf_core_users", column: "user_id"
-  add_foreign_key "bscf_core_vouchers", "bscf_core_virtual_accounts", column: "virtual_account_id"
+  add_foreign_key "bscf_core_vouchers", "bscf_core_users", column: "issued_by_id"
   add_foreign_key "bscf_core_wholesaler_products", "bscf_core_businesses", column: "business_id"
   add_foreign_key "bscf_core_wholesaler_products", "bscf_core_products", column: "product_id"
 end
