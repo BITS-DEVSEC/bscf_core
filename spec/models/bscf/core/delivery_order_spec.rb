@@ -4,7 +4,6 @@ module Bscf
   module Core
     RSpec.describe DeliveryOrder, type: :model do
       attributes = [
-        { order: :belong_to },
         { pickup_address: :belong_to },
         { dropoff_address: :belong_to },
         { buyer_phone: :presence },
@@ -14,6 +13,13 @@ module Bscf
         { estimated_delivery_time: :presence }
       ]
       include_examples("model_shared_spec", :delivery_order, attributes)
+
+      describe 'associations' do
+        it 'can have multiple orders' do
+          delivery_order = create(:delivery_order, :with_orders)
+          expect(delivery_order.orders.count).to eq(2)
+        end
+      end
 
       describe 'delivery times' do
         it 'sets delivery start time when status changes to in_transit' do

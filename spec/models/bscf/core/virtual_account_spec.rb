@@ -13,13 +13,15 @@ module Bscf
         { product_scheme: [ :presence ] },
         { voucher_type: [ :presence ] },
         { status: :presence },
-        { user: :belong_to }
+        { user: :belong_to },
+        { locked_amount: [ :presence, :numericality ] }
       ]
 
       include_examples("model_shared_spec", :virtual_account, attributes)
 
       it { should validate_numericality_of(:balance).is_greater_than_or_equal_to(0) }
       it { should validate_numericality_of(:interest_rate).is_greater_than_or_equal_to(0) }
+      it { should validate_numericality_of(:locked_amount).is_greater_than_or_equal_to(0) }
       it { should validate_inclusion_of(:product_scheme).in_array(VirtualAccount::PRODUCT_SCHEMES) }
       it { should validate_inclusion_of(:voucher_type).in_array(VirtualAccount::VOUCHER_TYPES) }
 
@@ -104,6 +106,78 @@ module Bscf
           account = create(:virtual_account, :loan_account)
           expect(account.product_scheme).to eq('LOAN')
           expect(account.interest_rate).to eq(12.5)
+        end
+      end
+
+      describe '#available_balance' do
+        let(:virtual_account) { create(:virtual_account, balance: 1000.0, locked_amount: 300.0) }
+
+        it 'returns balance minus locked amount' do
+          expect(virtual_account.available_balance).to eq(700.0)
+        end
+      end
+
+      describe '#lock_amount!' do
+        let(:virtual_account) { create(:virtual_account, balance: 1000.0, locked_amount: 0.0) }
+
+        context 'when amount is valid' do
+          it 'increases locked_amount' do
+            expect { virtual_account.lock_amount!(500.0) }.to change { virtual_account.locked_amount }.by(500.0)
+          end
+        end
+
+        context 'when amount is greater than available balance' do
+          it 'returns false' do
+            expect(virtual_account.lock_amount!(1500.0)).to be false
+          end
+        end
+
+        context 'when amount is negative' do
+          it 'returns false' do
+            expect(virtual_account.lock_amount!(-100.0)).to be false
+          end
+        end
+      end
+
+      describe '#unlock_amount!' do
+        let(:virtual_account) { create(:virtual_account, balance: 1000.0, locked_amount: 300.0) }
+
+        context 'when amount is valid' do
+          it 'decreases locked_amount' do
+            expect { virtual_account.unlock_amount!(100.0) }.to change { virtual_account.locked_amount }.by(-100.0)
+          end
+        end
+
+        context 'when amount is greater than locked amount' do
+          it 'returns false' do
+            expect(virtual_account.unlock_amount!(500.0)).to be false
+          end
+        end
+
+        context 'when amount is negative' do
+          it 'returns false' do
+            expect(virtual_account.unlock_amount!(-100.0)).to be false
+          end
+        end
+      end
+
+      describe 'available_balance_sufficient validation' do
+        let(:virtual_account) { build(:virtual_account, balance: 1000.0) }
+
+        it 'is valid when locked_amount is less than balance' do
+          virtual_account.locked_amount = 500.0
+          expect(virtual_account).to be_valid
+        end
+
+        it 'is valid when locked_amount equals balance' do
+          virtual_account.locked_amount = 1000.0
+          expect(virtual_account).to be_valid
+        end
+
+        it 'is invalid when locked_amount exceeds balance' do
+          virtual_account.locked_amount = 1500.0
+          expect(virtual_account).not_to be_valid
+          expect(virtual_account.errors[:locked_amount]).to include('cannot exceed balance')
         end
       end
     end
