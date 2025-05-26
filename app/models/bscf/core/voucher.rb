@@ -27,19 +27,37 @@ module Bscf
         return false unless active?
         return false if expired? || returned? || cancelled?
 
-        transaction do
-          from_account = issued_by.virtual_account
-          from_balance = from_account.balance
-          to_balance = to_account.balance
+        from_account = issued_by.virtual_account
+        success = false
 
-          from_account.update!(balance: from_balance - amount)
-          to_account.update!(balance: to_balance + amount)
-          
+        ActiveRecord::Base.transaction do
+          transaction = VirtualAccountTransaction.new(
+            from_account: from_account,
+            to_account: to_account,
+            amount: amount,
+            transaction_type: :transfer
+          )
+
+          unless transaction.process!
+            errors.add(:base, "Voucher redemption failed due to transaction processing error.")
+            raise ActiveRecord::Rollback
+          end
+
+          unless from_account.unlock_amount!(amount)
+            errors.add(:base, "Failed to unlock amount from issuer after successful transfer.")
+            raise ActiveRecord::Rollback
+          end
+
           update!(status: :redeemed, redeemed_at: Time.current)
-          true
-        rescue ActiveRecord::RecordInvalid
-          false
+          success = true
         end
+
+        success
+      rescue ActiveRecord::RecordInvalid => e
+        errors.add(:base, "Voucher redemption failed: #{e.message}")
+        false
+      rescue ActiveRecord::Rollback
+        false
       end
 
       def return!
@@ -59,7 +77,7 @@ module Bscf
       end
 
       def can_return?
-        redeemed? && !returned? && !cancelled? && !expired?
+        !redeemed? && !returned? && !cancelled? && !expired?
       end
 
       def can_cancel?
@@ -80,14 +98,16 @@ module Bscf
         issuer_account = issued_by.virtual_account
         unless issuer_account.available_balance >= amount
           errors.add(:amount, "exceeds available balance")
-          throw :abort
+          return false
         end
 
-        issuer_account.lock_amount!(amount)
-        update!(status: :active)
-      rescue ActiveRecord::RecordInvalid
-        errors.add(:amount, "could not be locked")
-        throw :abort
+        if issuer_account.lock_amount!(amount)
+          update!(status: :active)
+          true
+        else
+          errors.add(:amount, "could not be locked")
+          false
+        end
       end
 
       def unlock_issuer_amount
