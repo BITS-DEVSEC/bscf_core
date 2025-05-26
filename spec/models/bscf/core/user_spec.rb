@@ -9,6 +9,8 @@ module Bscf
         { last_name: :presence },
         { password: :presence },
         { phone_number: :presence },
+        { business: :have_one },
+        { vehicle: :have_one },
         { email: :uniqueness }
       ]
       include_examples("model_shared_spec", :user, attributes)

@@ -115,7 +115,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_21_084935) do
     t.string "buyer_phone", null: false
     t.string "seller_phone", null: false
     t.datetime "actual_delivery_time"
-    t.decimal "delivery_price", precision: 10, scale: 2, default: "0.0", null: false
+    t.float "delivery_price"
     t.index ["driver_id"], name: "index_bscf_core_delivery_orders_on_driver_id"
     t.index ["dropoff_address_id"], name: "index_bscf_core_delivery_orders_on_dropoff_address_id"
     t.index ["order_id"], name: "index_bscf_core_delivery_orders_on_order_id"
@@ -288,8 +288,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_21_084935) do
   end
 
   create_table "bscf_core_virtual_account_transactions", force: :cascade do |t|
-    t.bigint "from_account_id"
-    t.bigint "to_account_id"
+    t.bigint "from_account_id", null: false
+    t.bigint "to_account_id", null: false
     t.decimal "amount", null: false
     t.integer "transaction_type", null: false
     t.integer "status", default: 0, null: false
@@ -351,8 +351,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_21_084935) do
   add_foreign_key "bscf_core_delivery_orders", "bscf_core_users", column: "driver_id"
   add_foreign_key "bscf_core_marketplace_listings", "bscf_core_addresses", column: "address_id"
   add_foreign_key "bscf_core_marketplace_listings", "bscf_core_users", column: "user_id"
-  add_foreign_key "bscf_core_order_allocations", "bscf_core_delivery_orders", column: "delivery_order_id"
-  add_foreign_key "bscf_core_order_allocations", "bscf_core_orders", column: "order_id"
   add_foreign_key "bscf_core_order_items", "bscf_core_orders", column: "order_id"
   add_foreign_key "bscf_core_order_items", "bscf_core_products", column: "product_id"
   add_foreign_key "bscf_core_order_items", "bscf_core_quotation_items", column: "quotation_item_id"
@@ -377,7 +375,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_21_084935) do
   add_foreign_key "bscf_core_virtual_account_transactions", "bscf_core_virtual_accounts", column: "from_account_id"
   add_foreign_key "bscf_core_virtual_account_transactions", "bscf_core_virtual_accounts", column: "to_account_id"
   add_foreign_key "bscf_core_virtual_accounts", "bscf_core_users", column: "user_id"
-  add_foreign_key "bscf_core_vouchers", "bscf_core_virtual_accounts", column: "virtual_account_id"
   add_foreign_key "bscf_core_wholesaler_products", "bscf_core_businesses", column: "business_id"
   add_foreign_key "bscf_core_wholesaler_products", "bscf_core_products", column: "product_id"
 end
