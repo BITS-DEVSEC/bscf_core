@@ -6,8 +6,8 @@ module Bscf
       attributes = [
         { full_name: :presence },
         { phone_number: :presence },
-        { amount: [:presence, { numericality: [["is_greater_than", 0]] }] },
-        { code: [:presence, :uniqueness] },
+        { amount: [ :presence, { numericality: [ [ "is_greater_than", 0 ] ] } ] },
+        { code: [ :presence, :uniqueness ] },
         { issued_by: :belong_to }
       ]
 

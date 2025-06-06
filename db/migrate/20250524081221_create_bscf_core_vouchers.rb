@@ -8,7 +8,7 @@ class CreateBscfCoreVouchers < ActiveRecord::Migration[8.0]
       t.string :code, null: false
       t.integer :status, null: false, default: 0
       t.datetime :expires_at
-      t.references :issued_by, null: false, foreign_key: {to_table: :bscf_core_users}
+      t.references :issued_by, null: false, foreign_key: { to_table: :bscf_core_users }
       t.datetime :redeemed_at
       t.datetime :returned_at
 
