@@ -6,9 +6,11 @@ module Bscf
       attributes = [
         { user: :belong_to },
         { address: :belong_to },
+        { product: :belong_to },
         { listing_type: :presence },
         { status: :presence },
-        { is_active: :presence }
+        { is_active: :presence },
+        { price: :presence }
       ]
       include_examples("model_shared_spec", :marketplace_listing, attributes)
     end
