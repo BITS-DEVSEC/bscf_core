@@ -7,6 +7,8 @@ FactoryBot.define do
     expires_at { DateTime.now.advance(days: 5) }
     is_active { true }
     status { 1 }
+    price { Faker::Commerce.price }
+    product
     address
   end
 end

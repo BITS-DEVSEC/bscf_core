@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :virtual_account, class: 'Bscf::Core::VirtualAccount' do
     association :user, factory: :user
-    
+
     sequence(:cbs_account_number) { |n| "CBS#{n.to_s.rjust(8, '0')}" }
     branch_code { "BR001" }
     product_scheme { "SAVINGS" }

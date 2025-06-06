@@ -88,10 +88,9 @@ module Bscf
           amount: amount,
           transaction_type: :transfer
         )
-        
+
         transaction.process!
       end
     end
   end
 end
-

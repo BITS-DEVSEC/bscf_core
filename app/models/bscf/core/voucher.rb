@@ -1,7 +1,7 @@
 module Bscf
   module Core
     class Voucher < ApplicationRecord
-      belongs_to :issued_by, class_name: 'Bscf::Core::User'
+      belongs_to :issued_by, class_name: "Bscf::Core::User"
 
       validates :full_name, presence: true
       validates :phone_number, presence: true
@@ -21,7 +21,7 @@ module Bscf
       before_validation :generate_code, on: :create
       before_create :set_default_expiry
       after_create :lock_issuer_amount
-      after_commit :unlock_issuer_amount, on: [:update], if: :should_unlock_amount?
+      after_commit :unlock_issuer_amount, on: [ :update ], if: :should_unlock_amount?
 
       def redeem!(to_account)
         return false unless active?
