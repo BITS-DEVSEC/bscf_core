@@ -1,20 +1,29 @@
 module Bscf
   module Core
     class VirtualAccountTransaction < ApplicationRecord
-      belongs_to :from_account, class_name: "Bscf::Core::VirtualAccount", optional: true
-      belongs_to :to_account, class_name: "Bscf::Core::VirtualAccount", optional: true
+      belongs_to :account, class_name: "Bscf::Core::VirtualAccount"
+      belongs_to :paired_transaction, class_name: "Bscf::Core::VirtualAccountTransaction", optional: true
+      has_one :inverse_paired_transaction, class_name: "Bscf::Core::VirtualAccountTransaction", 
+              foreign_key: :paired_transaction_id
 
-      validates :from_account_id, presence: true, if: :requires_from_account?
-      validates :to_account_id, presence: true, if: :requires_to_account?
+      validates :account_id, presence: true
       validates :amount, presence: true, numericality: { greater_than: 0 }
       validates :transaction_type, presence: true
+      validates :entry_type, presence: true
       validates :status, presence: true
       validates :reference_number, presence: true, uniqueness: true
 
       enum :transaction_type, {
         transfer: 0,
         deposit: 1,
-        withdrawal: 2
+        withdrawal: 2,
+        fee: 3,      
+        adjustment: 4 
+      }
+
+      enum :entry_type, {
+        debit: 0,
+        credit: 1
       }
 
       enum :status, {
@@ -27,35 +36,86 @@ module Bscf
       before_validation :generate_reference_number, on: :create
       validate :validate_transaction, on: :create
 
+      scope :debits, -> { where(entry_type: :debit) }
+      scope :credits, -> { where(entry_type: :credit) }
+      scope :for_account, ->(account_id) { where(account_id: account_id) }
+      scope :transfers, -> { where(transaction_type: :transfer) }
+      scope :deposits, -> { where(transaction_type: :deposit) }
+      scope :withdrawals, -> { where(transaction_type: :withdrawal) }
+      scope :fees, -> { where(transaction_type: :fee) }
+      scope :adjustments, -> { where(transaction_type: :adjustment) }
+      scope :by_date_range, ->(start_date, end_date) { where(value_date: start_date..end_date) }
+      scope :successful, -> { where(status: :completed) }
+      scope :pending, -> { where(status: :pending) }
+      scope :failed, -> { where(status: :failed) }
+      
+      def from_account
+        return nil unless debit? && paired_transaction.present?
+        account
+      end
+
+      def to_account
+        return nil unless credit? && paired_transaction.present?
+        account
+      end
+
+      def from_account_id
+        return nil unless debit? && paired_transaction.present?
+        account_id
+      end
+
+      def to_account_id
+        return nil unless credit? && paired_transaction.present?
+        account_id
+      end
+
+      def transfer?
+        transaction_type.to_sym == :transfer
+      end
+
+      def deposit?
+        transaction_type.to_sym == :deposit
+      end
+
+      def withdrawal?
+        transaction_type.to_sym == :withdrawal
+      end
+
+      def fee?
+        transaction_type.to_sym == :fee
+      end
+
+      def adjustment?
+        transaction_type.to_sym == :adjustment
+      end
+
       def process!
         return false unless pending?
 
         ActiveRecord::Base.transaction do
           process_transaction
           update!(status: :completed)
+          paired_transaction&.update!(status: :completed)
         end
         true
       rescue StandardError => e
         update(status: :failed)
+        paired_transaction&.update(status: :failed)
+        Rails.logger.error("Transaction processing failed: #{e.message}")
         false
       end
 
       def cancel!
         return false unless pending?
-        update(status: :cancelled)
+        
+        ActiveRecord::Base.transaction do
+          update(status: :cancelled)
+          paired_transaction&.update(status: :cancelled)
+        end
+        true
       end
 
       private
-
-      def requires_from_account?
-        return false if transaction_type.nil?
-        %w[transfer withdrawal].include?(transaction_type)
-      end
-
-      def requires_to_account?
-        return false if transaction_type.nil?
-        %w[transfer deposit].include?(transaction_type)
-      end
 
       def validate_transaction
         case transaction_type.to_sym
@@ -65,46 +125,58 @@ module Bscf
           validate_withdrawal
         when :deposit
           validate_deposit
+        when :fee
+          validate_fee
+        when :adjustment
+          validate_adjustment
         end
-
-        validate_account_requirements
       end
 
       def validate_transfer
-        return unless from_account && to_account
-
-        errors.add(:from_account, "must be active") unless from_account.active?
-        errors.add(:to_account, "must be active") unless to_account.active?
-        errors.add(:from_account, "insufficient balance") if from_account.balance.to_d < amount.to_d
-      end
-
-      private
-
-      def validate_account_requirements
-        case transaction_type.to_sym
-        when :transfer
-          return if from_account_id.present? && to_account_id.present?
-          errors.add(:base, "Both accounts are required for transfer")
-        when :withdrawal
-          return if from_account_id.present?
-          errors.add(:base, "Source account is required for withdrawal")
-          errors.add(:to_account_id, "must be blank for withdrawal")
-        when :deposit
-          return if to_account_id.present?
-          errors.add(:base, "Destination account is required for deposit")
-          errors.add(:from_account_id, "must be blank for deposit")
+        if debit?
+          errors.add(:account, "must be active") unless account.active?
+          errors.add(:account, "insufficient balance") if account.balance.to_d < amount.to_d
+          errors.add(:paired_transaction, "must be present for transfers") unless paired_transaction.present?
+        elsif credit?
+          errors.add(:account, "must be active") unless account.active?
+          errors.add(:paired_transaction, "must be present for transfers") unless paired_transaction.present?
         end
       end
 
       def validate_withdrawal
-        return unless from_account
-        errors.add(:from_account, "must be active") unless from_account.active?
-        errors.add(:from_account, "insufficient balance") if from_account.balance.to_d < amount.to_d
+        if debit?
+          errors.add(:account, "must be active") unless account.active?
+          errors.add(:account, "insufficient balance") if account.balance.to_d < amount.to_d
+          errors.add(:paired_transaction, "must be present for withdrawals") unless paired_transaction.present?
+        elsif credit?
+          errors.add(:paired_transaction, "must be present for withdrawals") unless paired_transaction.present?
+        end
       end
 
       def validate_deposit
-        return unless to_account
-        errors.add(:to_account, "must be active") unless to_account.active?
+        if credit?
+          errors.add(:account, "must be active") unless account.active?
+          errors.add(:paired_transaction, "must be present for deposits") unless paired_transaction.present?
+        elsif debit?
+          errors.add(:paired_transaction, "must be present for deposits") unless paired_transaction.present?
+        end
+      end
+
+      def validate_fee
+        if debit?
+          errors.add(:account, "must be active") unless account.active?
+          errors.add(:account, "insufficient balance") if account.balance.to_d < amount.to_d
+          errors.add(:paired_transaction, "must be present for fees") unless paired_transaction.present?
+        elsif credit?
+          errors.add(:paired_transaction, "must be present for fees") unless paired_transaction.present?
+        end
+      end
+
+      def validate_adjustment
+        errors.add(:account, "must be active") unless account.active?
+        if debit? && account.balance.to_d < amount.to_d
+          errors.add(:account, "insufficient balance for debit adjustment")
+        end
       end
 
       def process_transaction
@@ -115,34 +187,92 @@ module Bscf
           process_withdrawal
         when :deposit
           process_deposit
+        when :fee
+          process_fee
+        when :adjustment
+          process_adjustment
         end
       end
 
       def process_transfer
-        ActiveRecord::Base.transaction do
-          from_account.with_lock do
-            to_account.with_lock do
-              new_from_balance = (from_account.balance - amount).round(2)
-              new_to_balance = (to_account.balance + amount).round(2)
-
-              from_account.update!(balance: new_from_balance)
-              to_account.update!(balance: new_to_balance)
-            end
+        if debit?
+          account.with_lock do
+            new_balance = (account.balance - amount).round(2)
+            account.update!(balance: new_balance)
+            update!(running_balance: new_balance)
+          end
+        elsif credit?
+          account.with_lock do
+            new_balance = (account.balance + amount).round(2)
+            account.update!(balance: new_balance)
+            update!(running_balance: new_balance)
           end
         end
       end
 
       def process_withdrawal
-        from_account.with_lock do
-          new_balance = (from_account.balance - amount).round(2)
-          from_account.update!(balance: new_balance)
+        if debit?
+          account.with_lock do
+            new_balance = (account.balance - amount).round(2)
+            account.update!(balance: new_balance)
+            update!(running_balance: new_balance)
+          end
+        elsif credit?
+          if account.system?
+            account.with_lock do
+              new_balance = (account.balance + amount).round(2)
+              account.update!(balance: new_balance)
+              update!(running_balance: new_balance)
+            end
+          end
         end
       end
 
       def process_deposit
-        to_account.with_lock do
-          new_balance = (to_account.balance + amount).round(2)
-          to_account.update!(balance: new_balance)
+        if credit?
+          account.with_lock do
+            new_balance = (account.balance + amount).round(2)
+            account.update!(balance: new_balance)
+            update!(running_balance: new_balance)
+          end
+        elsif debit?
+          if account.system?
+            account.with_lock do
+              new_balance = (account.balance - amount).round(2)
+              account.update!(balance: new_balance)
+              update!(running_balance: new_balance)
+            end
+          end
+        end
+      end
+
+      def process_fee
+        if debit?
+          account.with_lock do
+            new_balance = (account.balance - amount).round(2)
+            account.update!(balance: new_balance)
+            update!(running_balance: new_balance)
+          end
+        elsif credit?
+          if account.system?
+            account.with_lock do
+              new_balance = (account.balance + amount).round(2)
+              account.update!(balance: new_balance)
+              update!(running_balance: new_balance)
+            end
+          end
+        end
+      end
+
+      def process_adjustment
+        account.with_lock do
+          if debit?
+            new_balance = (account.balance - amount).round(2)
+          else 
+            new_balance = (account.balance + amount).round(2)
+          end
+          account.update!(balance: new_balance)
+          update!(running_balance: new_balance)
         end
       end
 
