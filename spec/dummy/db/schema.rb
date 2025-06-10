@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_09_180530) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_10_120351) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -88,15 +88,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_09_180530) do
   create_table "bscf_core_delivery_order_items", force: :cascade do |t|
     t.bigint "delivery_order_id", null: false
     t.bigint "order_item_id", null: false
-    t.bigint "product_id", null: false
     t.integer "quantity", null: false
     t.integer "status", default: 0, null: false
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "pickup_address_id"
+    t.bigint "dropoff_address_id"
     t.index ["delivery_order_id"], name: "index_bscf_core_delivery_order_items_on_delivery_order_id"
+    t.index ["dropoff_address_id"], name: "index_bscf_core_delivery_order_items_on_dropoff_address_id"
     t.index ["order_item_id"], name: "index_bscf_core_delivery_order_items_on_order_item_id"
-    t.index ["product_id"], name: "index_bscf_core_delivery_order_items_on_product_id"
+    t.index ["pickup_address_id"], name: "index_bscf_core_delivery_order_items_on_pickup_address_id"
   end
 
   create_table "bscf_core_delivery_orders", force: :cascade do |t|
@@ -111,10 +113,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_09_180530) do
     t.datetime "updated_at", null: false
     t.bigint "driver_id"
     t.bigint "pickup_address_id", null: false
-    t.string "buyer_phone", null: false
-    t.string "seller_phone", null: false
     t.datetime "actual_delivery_time"
-    t.float "delivery_price"
+    t.float "actual_delivery_price"
+    t.float "estimated_delivery_price"
     t.index ["driver_id"], name: "index_bscf_core_delivery_orders_on_driver_id"
     t.index ["dropoff_address_id"], name: "index_bscf_core_delivery_orders_on_dropoff_address_id"
     t.index ["pickup_address_id"], name: "index_bscf_core_delivery_orders_on_pickup_address_id"
@@ -366,9 +367,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_09_180530) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "bscf_core_business_documents", "bscf_core_businesses", column: "business_id"
   add_foreign_key "bscf_core_businesses", "bscf_core_users", column: "user_id"
+  add_foreign_key "bscf_core_delivery_order_items", "bscf_core_addresses", column: "dropoff_address_id"
+  add_foreign_key "bscf_core_delivery_order_items", "bscf_core_addresses", column: "pickup_address_id"
   add_foreign_key "bscf_core_delivery_order_items", "bscf_core_delivery_orders", column: "delivery_order_id"
   add_foreign_key "bscf_core_delivery_order_items", "bscf_core_order_items", column: "order_item_id"
-  add_foreign_key "bscf_core_delivery_order_items", "bscf_core_products", column: "product_id"
   add_foreign_key "bscf_core_delivery_orders", "bscf_core_addresses", column: "dropoff_address_id"
   add_foreign_key "bscf_core_delivery_orders", "bscf_core_addresses", column: "pickup_address_id"
   add_foreign_key "bscf_core_delivery_orders", "bscf_core_users", column: "driver_id"
