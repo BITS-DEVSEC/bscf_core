@@ -9,8 +9,7 @@ module Bscf::Core
     has_many :order_items, through: :delivery_order_items
     has_many :products, through: :delivery_order_items
 
-    validates :buyer_phone, :seller_phone, :driver_phone,
-              :status, :estimated_delivery_time, presence: true
+    validates :driver_phone, :status, :estimated_delivery_time, presence: true
     validate :end_time_after_start_time, if: -> { delivery_start_time.present? && delivery_end_time.present? }
 
     before_save :update_delivery_times

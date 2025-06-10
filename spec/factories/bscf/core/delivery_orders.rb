@@ -2,38 +2,15 @@ FactoryBot.define do
   factory :delivery_order, class: 'Bscf::Core::DeliveryOrder' do
     association :pickup_address, factory: :address
     association :dropoff_address, factory: :address
-    driver { nil }
+    association :driver, factory: :user
 
-    buyer_phone { Faker::PhoneNumber.phone_number }
-    seller_phone { Faker::PhoneNumber.phone_number }
     driver_phone { Faker::PhoneNumber.phone_number }
     delivery_notes { Faker::Lorem.paragraph }
     estimated_delivery_time { 2.days.from_now }
+    estimated_delivery_price { Faker::Number.decimal(l_digits: 2, r_digits: 2) }
+    actual_delivery_price { Faker::Number.decimal(l_digits: 2, r_digits: 2) }
     delivery_start_time { nil }
     delivery_end_time { nil }
     status { :pending }
-
-    trait :with_driver do
-      association :driver, factory: :user
-    end
-
-    trait :in_transit do
-      with_driver
-      status { :in_transit }
-      delivery_start_time { Time.current }
-    end
-
-    trait :delivered do
-      with_driver
-      status { :delivered }
-      delivery_start_time { 2.hours.ago }
-      delivery_end_time { Time.current }
-    end
-
-    trait :with_orders do
-      after(:create) do |delivery_order|
-        create_list(:order, 2, delivery_order: delivery_order)
-      end
-    end
   end
 end

@@ -6,8 +6,6 @@ module Bscf
       attributes = [
         { pickup_address: :belong_to },
         { dropoff_address: :belong_to },
-        { buyer_phone: :presence },
-        { seller_phone: :presence },
         { driver_phone: :presence },
         { status: :presence },
         { estimated_delivery_time: :presence }
@@ -16,7 +14,9 @@ module Bscf
 
       describe 'associations' do
         it 'can have multiple orders' do
-          delivery_order = create(:delivery_order, :with_orders)
+          delivery_order = create(:delivery_order)
+          order1 = create(:order, delivery_order: delivery_order)
+          order2 = create(:order, delivery_order: delivery_order)
           expect(delivery_order.orders.count).to eq(2)
         end
       end
@@ -29,19 +29,19 @@ module Bscf
         end
 
         it 'sets delivery end time when status changes to delivered' do
-          delivery_order = create(:delivery_order, :in_transit)
+          delivery_order = create(:delivery_order, status: :in_transit, delivery_start_time: 1.hour.ago)
           delivery_order.update(status: :delivered)
           expect(delivery_order.delivery_end_time).to be_present
         end
 
         it 'sets delivery end time when status changes to failed' do
-          delivery_order = create(:delivery_order, :in_transit)
+          delivery_order = create(:delivery_order, status: :in_transit, delivery_start_time: 1.hour.ago)
           delivery_order.update(status: :failed)
           expect(delivery_order.delivery_end_time).to be_present
         end
 
         it 'validates end time is after start time' do
-          delivery_order = create(:delivery_order, :in_transit)
+          delivery_order = create(:delivery_order, status: :in_transit, delivery_start_time: 1.hour.ago)
           delivery_order.delivery_end_time = delivery_order.delivery_start_time - 1.hour
 
           expect(delivery_order).not_to be_valid

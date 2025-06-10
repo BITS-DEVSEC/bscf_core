@@ -6,7 +6,8 @@ module Bscf
       attributes = [
         { delivery_order: :belong_to },
         { order_item: :belong_to },
-        { product: :belong_to },
+        { pickup_address: [ { belong_to: [ [ :optional, nil ] ] } ] },
+        { dropoff_address: [ { belong_to: [ [ :optional, nil ] ] } ] },
         { quantity: :presence },
         { status: :presence }
       ]

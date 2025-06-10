@@ -2,7 +2,8 @@ module Bscf::Core
   class DeliveryOrderItem < ApplicationRecord
     belongs_to :delivery_order
     belongs_to :order_item
-    belongs_to :product
+    belongs_to :pickup_address, class_name: "Bscf::Core::Address", optional: true
+    belongs_to :dropoff_address, class_name: "Bscf::Core::Address", optional: true
 
     validates :quantity, :status, presence: true
     validate :quantity_not_exceeding_order_item
