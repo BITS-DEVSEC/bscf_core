@@ -16,7 +16,7 @@ module Bscf
 
       describe 'validations' do
         it { should validate_numericality_of(:amount).is_greater_than(0) }
-        
+
         it 'validates presence of paired_transaction for transfers' do
           transaction = build(:virtual_account_transaction, transaction_type: :transfer)
           expect(transaction.valid?).to be false
@@ -51,7 +51,7 @@ module Bscf
         let(:debit_account) { create(:virtual_account, balance: 1000.00, status: :active) }
         let(:credit_account) { create(:virtual_account, balance: 500.00, status: :active) }
         let(:system_account) { create(:virtual_account, balance: 1000.00, status: :active) }
-        
+
         context 'when processing transfer' do
           let(:debit_transaction) do
             create(:paired_transaction,
@@ -80,7 +80,7 @@ module Bscf
                                 paired_account: credit_account,
                                 amount: 2000.00,
                                 is_credit: false)
-                                    
+
             expect(transaction.valid?).to be false
             expect(transaction.errors[:account]).to include('insufficient balance')
           end
@@ -94,7 +94,7 @@ module Bscf
                                 paired_account: credit_account,
                                 amount: 300.00,
                                 is_credit: false)
-                                    
+
             expect(transaction.valid?).to be false
             expect(transaction.errors[:account]).to include('must be active')
           end
@@ -127,7 +127,7 @@ module Bscf
                                 paired_account: system_account,
                                 amount: 300.00,
                                 is_credit: true)
-                                      
+
             expect(transaction.valid?).to be false
             expect(transaction.errors[:account]).to include('must be active')
           end
@@ -160,7 +160,7 @@ module Bscf
                                 paired_account: system_account,
                                 amount: 300.00,
                                 is_credit: false)
-                                    
+
             expect(transaction.valid?).to be false
             expect(transaction.errors[:account]).to include('must be active')
           end
@@ -171,7 +171,7 @@ module Bscf
         it 'cancels pending transaction' do
           debit_account = create(:virtual_account, balance: 1000.00, status: :active)
           credit_account = create(:virtual_account, balance: 500.00, status: :active)
-          
+
           debit_transaction = create(:paired_transaction,
                                     transaction_type: :transfer,
                                     entry_type: :debit,
@@ -179,7 +179,7 @@ module Bscf
                                     paired_account: credit_account,
                                     amount: 300.00,
                                     is_credit: false)
-          
+
           expect(debit_transaction.cancel!).to be true
           expect(debit_transaction.status).to eq('cancelled')
         end
@@ -187,7 +187,7 @@ module Bscf
         it 'cannot cancel completed transaction' do
           debit_account = create(:virtual_account, balance: 1000.00, status: :active)
           credit_account = create(:virtual_account, balance: 500.00, status: :active)
-          
+
           debit_transaction = create(:paired_transaction,
                                     transaction_type: :transfer,
                                     entry_type: :debit,
@@ -196,7 +196,7 @@ module Bscf
                                     amount: 300.00,
                                     status: :completed,
                                     is_credit: false)
-          
+
           expect(debit_transaction.cancel!).to be false
         end
       end

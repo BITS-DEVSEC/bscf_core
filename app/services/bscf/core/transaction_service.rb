@@ -23,11 +23,11 @@ module Bscf
       # @param description [String] Optional description
       # @return [Array<VirtualAccountTransaction>] The created transaction pair
       def self.create_deposit(to_account_id:, amount:, description: nil)
-        system_account = find_or_create_system_account('DEPOSIT_ACCOUNT')
-        
+        system_account = find_or_create_system_account("DEPOSIT_ACCOUNT")
+
         # Ensure system account has sufficient balance for deposits
         ensure_system_account_balance(system_account, amount)
-        
+
         create_paired_transaction(
           from_account_id: system_account.id,
           to_account_id: to_account_id,
@@ -43,8 +43,8 @@ module Bscf
       # @param description [String] Optional description
       # @return [Array<VirtualAccountTransaction>] The created transaction pair
       def self.create_withdrawal(from_account_id:, amount:, description: nil)
-        system_account = find_or_create_system_account('WITHDRAWAL_ACCOUNT')
-        
+        system_account = find_or_create_system_account("WITHDRAWAL_ACCOUNT")
+
         create_paired_transaction(
           from_account_id: from_account_id,
           to_account_id: system_account.id,
@@ -60,8 +60,8 @@ module Bscf
       # @param description [String] Optional description
       # @return [Array<VirtualAccountTransaction>] The created transaction pair
       def self.create_fee(from_account_id:, amount:, description: nil)
-        fee_account = find_or_create_system_account('FEE_ACCOUNT')
-        
+        fee_account = find_or_create_system_account("FEE_ACCOUNT")
+
         create_paired_transaction(
           from_account_id: from_account_id,
           to_account_id: fee_account.id,
@@ -79,7 +79,7 @@ module Bscf
       # @return [VirtualAccountTransaction] The created adjustment transaction
       def self.create_adjustment(account_id:, amount:, is_debit: true, description: nil)
         reference_number = generate_reference_number
-        
+
         VirtualAccountTransaction.create!(
           transaction_type: :adjustment,
           entry_type: is_debit ? :debit : :credit,
@@ -109,7 +109,7 @@ module Bscf
 
       def self.create_paired_transaction(from_account_id:, to_account_id:, amount:, transaction_type:, description: nil)
         reference_number = generate_reference_number
-        
+
         ActiveRecord::Base.transaction do
           # Debit entry (from account)
           debit = VirtualAccountTransaction.create!(
@@ -121,7 +121,7 @@ module Bscf
             description: description,
             status: :pending
           )
-          
+
           # Credit entry (to account)
           credit = VirtualAccountTransaction.create!(
             transaction_type: transaction_type,
@@ -133,11 +133,11 @@ module Bscf
             status: :pending,
             paired_transaction_id: debit.id
           )
-          
+
           # Update the paired_transaction_id for the debit entry
           debit.update!(paired_transaction_id: credit.id)
-          
-          [debit, credit]
+
+          [ debit, credit ]
         end
       end
 
@@ -147,19 +147,19 @@ module Bscf
           # Set default values for a new system account
           account.user_id = find_or_create_system_user.id
           account.cbs_account_number = account_identifier
-          account.branch_code = 'SYSTEM'
-          account.product_scheme = 'SAVINGS'
-          account.voucher_type = 'REGULAR'
+          account.branch_code = "SYSTEM"
+          account.product_scheme = "SAVINGS"
+          account.voucher_type = "REGULAR"
           account.interest_rate = 0
           account.interest_type = :simple
           account.balance = 100000.00  # Initialize with a large balance
           account.locked_amount = 0
           account.status = :active
         end
-        
+
         account
       end
-      
+
       def self.ensure_system_account_balance(account, required_amount)
         # Top up the system account if needed
         if account.balance < required_amount
@@ -168,9 +168,9 @@ module Bscf
       end
 
       def self.find_or_create_system_user
-        User.find_or_create_by!(phone_number: 'SYSTEM_USER') do |user|
-          user.first_name = 'System'
-          user.last_name = 'User'
+        User.find_or_create_by!(phone_number: "SYSTEM_USER") do |user|
+          user.first_name = "System"
+          user.last_name = "User"
           user.password = SecureRandom.hex(8)
         end
       end

@@ -15,8 +15,8 @@ module Bscf
         transfer: 0,
         deposit: 1,
         withdrawal: 2,
-        fee: 3,      
-        adjustment: 4 
+        fee: 3,
+        adjustment: 4
       }
 
       enum :entry_type, {
@@ -39,13 +39,13 @@ module Bscf
       scope :for_account, ->(account_id) { where(account_id: account_id) }
       scope :by_type, ->(type) { where(transaction_type: type) }
       scope :by_status, ->(status) { where(status: status) }
-      
+
       def process!
         return false unless pending?
 
         ActiveRecord::Base.transaction do
           update_account_balance
-          
+
           update!(status: :completed)
           paired_transaction&.update!(status: :completed)
         end
@@ -59,7 +59,7 @@ module Bscf
 
       def cancel!
         return false unless pending?
-        
+
         ActiveRecord::Base.transaction do
           update(status: :cancelled)
           paired_transaction&.update(status: :cancelled)
@@ -71,11 +71,11 @@ module Bscf
 
       def validate_transaction
         errors.add(:account, "must be active") unless account.active?
-        
+
         if debit? && !adjustment? && account.balance.to_d < amount.to_d
           errors.add(:account, "insufficient balance")
         end
-        
+
         if transfer? && paired_transaction.blank?
           errors.add(:paired_transaction, "must be present for transfers")
         end
@@ -85,22 +85,22 @@ module Bscf
         account.with_lock do
           new_balance = if debit?
                           (account.balance - amount).round(2)
-                        else
+          else
                           (account.balance + amount).round(2)
-                        end
-          
+          end
+
           account.update!(balance: new_balance)
           update!(running_balance: new_balance)
         end
-        
+
         if paired_transaction.present?
           paired_transaction.account.with_lock do
             new_balance = if paired_transaction.debit?
                             (paired_transaction.account.balance - paired_transaction.amount).round(2)
-                          else
+            else
                             (paired_transaction.account.balance + paired_transaction.amount).round(2)
-                          end
-            
+            end
+
             paired_transaction.account.update!(balance: new_balance)
             paired_transaction.update!(running_balance: new_balance)
           end
