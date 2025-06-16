@@ -12,10 +12,6 @@ module Bscf
       describe '#coordinates' do
         context 'when both latitude and longitude are present' do
           it 'returns an array with latitude and longitude symbols' do
-            # Assuming you have a factory for Address or can build an instance
-            # If using factories (e.g., FactoryBot), it would be something like:
-            # address = build(:address, latitude: '10.0', longitude: '20.0')
-            # For now, let's instantiate directly for clarity if no factory is set up for this example
             address = Address.new(latitude: '10.0', longitude: '20.0')
             expect(address.coordinates).to eq([ :latitude, :longitude ])
           end
