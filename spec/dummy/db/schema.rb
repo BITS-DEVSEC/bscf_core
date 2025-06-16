@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_16_123937) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_16_131835) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -199,6 +199,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_16_123937) do
     t.index ["ordered_by_id"], name: "index_bscf_core_orders_on_ordered_by_id"
     t.index ["ordered_to_id"], name: "index_bscf_core_orders_on_ordered_to_id"
     t.index ["quotation_id"], name: "index_bscf_core_orders_on_quotation_id"
+  end
+
+  create_table "bscf_core_payments", force: :cascade do |t|
+    t.bigint "invoice_id", null: false
+    t.bigint "virtual_account_transaction_id"
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.integer "payment_method", default: 0, null: false
+    t.datetime "payment_date"
+    t.string "reference_number", null: false
+    t.integer "status", default: 0, null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_bscf_core_payments_on_invoice_id"
+    t.index ["virtual_account_transaction_id"], name: "index_bscf_core_payments_on_virtual_account_transaction_id"
   end
 
   create_table "bscf_core_products", force: :cascade do |t|
@@ -419,6 +434,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_16_123937) do
   add_foreign_key "bscf_core_orders", "bscf_core_quotations", column: "quotation_id"
   add_foreign_key "bscf_core_orders", "bscf_core_users", column: "ordered_by_id"
   add_foreign_key "bscf_core_orders", "bscf_core_users", column: "ordered_to_id"
+  add_foreign_key "bscf_core_payments", "bscf_core_invoices", column: "invoice_id"
+  add_foreign_key "bscf_core_payments", "bscf_core_virtual_account_transactions", column: "virtual_account_transaction_id"
   add_foreign_key "bscf_core_products", "bscf_core_categories", column: "category_id"
   add_foreign_key "bscf_core_quotation_items", "bscf_core_products", column: "product_id"
   add_foreign_key "bscf_core_quotation_items", "bscf_core_quotations", column: "quotation_id"
