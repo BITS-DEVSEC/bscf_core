@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_10_120351) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_16_131835) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -121,6 +121,38 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_10_120351) do
     t.index ["pickup_address_id"], name: "index_bscf_core_delivery_orders_on_pickup_address_id"
   end
 
+  create_table "bscf_core_invoice_items", force: :cascade do |t|
+    t.bigint "invoice_id", null: false
+    t.bigint "order_item_id", null: false
+    t.string "description"
+    t.integer "quantity", null: false
+    t.decimal "unit_price", precision: 10, scale: 2, null: false
+    t.decimal "tax_rate", precision: 10, scale: 2
+    t.decimal "tax_amount", precision: 10, scale: 2
+    t.decimal "discount_amount", precision: 10, scale: 2
+    t.decimal "subtotal", precision: 10, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_bscf_core_invoice_items_on_invoice_id"
+    t.index ["order_item_id"], name: "index_bscf_core_invoice_items_on_order_item_id"
+  end
+
+  create_table "bscf_core_invoices", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.string "invoice_number", null: false
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.decimal "tax_amount", precision: 10, scale: 2, null: false
+    t.decimal "discount_amount", precision: 10, scale: 2, null: false
+    t.decimal "total_amount", precision: 10, scale: 2, null: false
+    t.datetime "due_date"
+    t.integer "status", default: 0, null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_number"], name: "index_bscf_core_invoices_on_invoice_number", unique: true
+    t.index ["order_id"], name: "index_bscf_core_invoices_on_order_id"
+  end
+
   create_table "bscf_core_marketplace_listings", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.integer "listing_type", null: false
@@ -167,6 +199,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_10_120351) do
     t.index ["ordered_by_id"], name: "index_bscf_core_orders_on_ordered_by_id"
     t.index ["ordered_to_id"], name: "index_bscf_core_orders_on_ordered_to_id"
     t.index ["quotation_id"], name: "index_bscf_core_orders_on_quotation_id"
+  end
+
+  create_table "bscf_core_payments", force: :cascade do |t|
+    t.bigint "invoice_id", null: false
+    t.bigint "virtual_account_transaction_id"
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.integer "payment_method", default: 0, null: false
+    t.datetime "payment_date"
+    t.string "reference_number", null: false
+    t.integer "status", default: 0, null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_bscf_core_payments_on_invoice_id"
+    t.index ["virtual_account_transaction_id"], name: "index_bscf_core_payments_on_virtual_account_transaction_id"
   end
 
   create_table "bscf_core_products", force: :cascade do |t|
@@ -374,6 +421,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_10_120351) do
   add_foreign_key "bscf_core_delivery_orders", "bscf_core_addresses", column: "dropoff_address_id"
   add_foreign_key "bscf_core_delivery_orders", "bscf_core_addresses", column: "pickup_address_id"
   add_foreign_key "bscf_core_delivery_orders", "bscf_core_users", column: "driver_id"
+  add_foreign_key "bscf_core_invoice_items", "bscf_core_invoices", column: "invoice_id"
+  add_foreign_key "bscf_core_invoice_items", "bscf_core_order_items", column: "order_item_id"
+  add_foreign_key "bscf_core_invoices", "bscf_core_orders", column: "order_id"
   add_foreign_key "bscf_core_marketplace_listings", "bscf_core_addresses", column: "address_id"
   add_foreign_key "bscf_core_marketplace_listings", "bscf_core_products", column: "product_id"
   add_foreign_key "bscf_core_marketplace_listings", "bscf_core_users", column: "user_id"
@@ -384,6 +434,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_10_120351) do
   add_foreign_key "bscf_core_orders", "bscf_core_quotations", column: "quotation_id"
   add_foreign_key "bscf_core_orders", "bscf_core_users", column: "ordered_by_id"
   add_foreign_key "bscf_core_orders", "bscf_core_users", column: "ordered_to_id"
+  add_foreign_key "bscf_core_payments", "bscf_core_invoices", column: "invoice_id"
+  add_foreign_key "bscf_core_payments", "bscf_core_virtual_account_transactions", column: "virtual_account_transaction_id"
   add_foreign_key "bscf_core_products", "bscf_core_categories", column: "category_id"
   add_foreign_key "bscf_core_quotation_items", "bscf_core_products", column: "product_id"
   add_foreign_key "bscf_core_quotation_items", "bscf_core_quotations", column: "quotation_id"
