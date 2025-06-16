@@ -402,6 +402,7 @@ DEPENDENCIES
   debug (>= 1.0.0)
   factory_bot_rails
   faker
+  httparty
   image_processing
   letter_opener
   pg (~> 1.1)

@@ -13,6 +13,7 @@ gem "sentry-rails"
 gem "sentry-ruby"
 gem "stackprof"
 gem "image_processing"
+gem "httparty"
 
 gem "activestorage"
 
