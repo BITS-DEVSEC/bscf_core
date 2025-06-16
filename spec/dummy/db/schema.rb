@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_10_120351) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_16_121538) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -119,6 +119,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_10_120351) do
     t.index ["driver_id"], name: "index_bscf_core_delivery_orders_on_driver_id"
     t.index ["dropoff_address_id"], name: "index_bscf_core_delivery_orders_on_dropoff_address_id"
     t.index ["pickup_address_id"], name: "index_bscf_core_delivery_orders_on_pickup_address_id"
+  end
+
+  create_table "bscf_core_invoices", force: :cascade do |t|
+    t.bigint "order_id_id", null: false
+    t.string "invoice_number", null: false
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.decimal "tax_amount", precision: 10, scale: 2, null: false
+    t.decimal "discount_amount", precision: 10, scale: 2, null: false
+    t.decimal "total_amount", precision: 10, scale: 2, null: false
+    t.datetime "due_date"
+    t.integer "status", default: 0, null: false
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_number"], name: "index_bscf_core_invoices_on_invoice_number", unique: true
+    t.index ["order_id_id"], name: "index_bscf_core_invoices_on_order_id_id"
   end
 
   create_table "bscf_core_marketplace_listings", force: :cascade do |t|
@@ -374,6 +390,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_10_120351) do
   add_foreign_key "bscf_core_delivery_orders", "bscf_core_addresses", column: "dropoff_address_id"
   add_foreign_key "bscf_core_delivery_orders", "bscf_core_addresses", column: "pickup_address_id"
   add_foreign_key "bscf_core_delivery_orders", "bscf_core_users", column: "driver_id"
+  add_foreign_key "bscf_core_invoices", "bscf_core_orders", column: "order_id_id"
   add_foreign_key "bscf_core_marketplace_listings", "bscf_core_addresses", column: "address_id"
   add_foreign_key "bscf_core_marketplace_listings", "bscf_core_products", column: "product_id"
   add_foreign_key "bscf_core_marketplace_listings", "bscf_core_users", column: "user_id"
