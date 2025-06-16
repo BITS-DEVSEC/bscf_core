@@ -11,6 +11,9 @@ module Bscf::Core
 
     after_save :update_delivery_order_status
     before_save :sync_status_with_delivery_order
+    before_save :set_default_pickup_address, if: -> { pickup_address.nil? && delivery_order.present? }
+    # Add default scope for ordering by position
+    default_scope { order(position: :asc) }
 
     enum :status, {
       pending: 0,
@@ -21,6 +24,10 @@ module Bscf::Core
     }
 
     private
+
+    def set_default_pickup_address
+      self.pickup_address = delivery_order.pickup_address
+    end
 
     def quantity_not_exceeding_order_item
       return unless quantity && order_item&.quantity

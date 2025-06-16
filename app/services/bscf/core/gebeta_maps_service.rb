@@ -1,4 +1,4 @@
-  require 'httparty'
+  require "httparty"
 
   module Bscf
     module Core
@@ -7,7 +7,7 @@
         base_uri "https://api.gebeta.app/api/v1"
 
         def initialize
-          @api_key = Rails.application.credentials.gebeta_maps[:api_key]
+          @api_key = ENV["GEBETA_API_KEY"]
         end
 
         # One-to-Many (ONM) API for route optimization
