@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bscf-core (0.3.99)
+    bscf-core (0.4.0)
       active_model_serializers
       ancestry (~> 4.1.0)
       bcrypt (~> 3.1)
@@ -418,4 +418,4 @@ DEPENDENCIES
   stackprof
 
 BUNDLED WITH
-   2.6.2
+   2.6.9
