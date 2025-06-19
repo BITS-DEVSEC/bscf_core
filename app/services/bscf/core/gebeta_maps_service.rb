@@ -4,7 +4,7 @@
     module Core
       class GebetaMapsService
         include HTTParty
-        base_uri "https://api.gebeta.app/api/v1"
+        base_uri "https://mapapi.gebeta.app/api/"
 
         def initialize
           @api_key = ENV["GEBETA_API_KEY"]
@@ -33,7 +33,7 @@
 
           # Make API request
           response = self.class.get(
-            "/direction/onm",
+            "/route/onm",
             query: {
               origin: "#{origin[0]},#{origin[1]}",
               json: destinations_json,
