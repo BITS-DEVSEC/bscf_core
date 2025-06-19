@@ -20,4 +20,5 @@ coverage.*
 
 .env
 
-/config/master.key
+spec/dummy/config/master.key
+config/master.key

@@ -7,7 +7,7 @@
         base_uri "https://mapapi.gebeta.app/api/"
 
         def initialize
-          @api_key = ENV["GEBETA_API_KEY"]
+          @api_key = ENV["GEBETA_API_KEY"] || Rails.application.credentials.gebeta_api_key
         end
 
         # One-to-Many (ONM) API for route optimization
