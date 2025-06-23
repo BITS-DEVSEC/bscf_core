@@ -5,7 +5,6 @@ module Bscf
 
       # Add associations for delivery orders and items
       has_many :delivery_order_pickups, class_name: "Bscf::Core::DeliveryOrder", foreign_key: "pickup_address_id"
-      has_many :delivery_order_dropoffs, class_name: "Bscf::Core::DeliveryOrder", foreign_key: "dropoff_address_id"
       has_many :delivery_order_item_pickups, class_name: "Bscf::Core::DeliveryOrderItem", foreign_key: "pickup_address_id"
       has_many :delivery_order_item_dropoffs, class_name: "Bscf::Core::DeliveryOrderItem", foreign_key: "dropoff_address_id"
 
@@ -24,8 +23,7 @@ module Bscf
       def requires_coordinates?
         # Determine when coordinates are required
         # For delivery addresses, they should always be required
-        delivery_order_pickups.any? || delivery_order_dropoffs.any? ||
-        delivery_order_item_pickups.any? || delivery_order_item_dropoffs.any?
+        delivery_order_pickups.any? || delivery_order_item_pickups.any? || delivery_order_item_dropoffs.any?
       end
     end
   end
