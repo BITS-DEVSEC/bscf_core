@@ -13,6 +13,7 @@ module Bscf
       private
 
       def calculate_subtotal
+        self.unit_price = order_item.unit_price
         self.subtotal = quantity * unit_price if quantity.present? && unit_price.present?
       end
     end

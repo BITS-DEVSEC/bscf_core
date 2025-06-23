@@ -22,9 +22,9 @@ module Bscf
 
       describe '#calculate_subtotal' do
         it 'calculates subtotal before save' do
-          invoice_item = create(:invoice_item, quantity: 5, unit_price: 10.0)
-          
-          expect(invoice_item.subtotal).to eq(50.0)
+          invoice_item = create(:invoice_item, quantity: 5)
+          expect(invoice_item.unit_price).to eq(invoice_item.order_item.unit_price)
+          expect(invoice_item.subtotal).to eq(invoice_item.unit_price * invoice_item.quantity)
         end
       end
     end
