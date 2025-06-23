@@ -2,7 +2,7 @@ module Bscf
   module Core
     class Invoice < ApplicationRecord
       belongs_to :order
-      has_many :payments, dependent: :destroy 
+      has_many :payments, dependent: :destroy
 
       validates :invoice_number, presence: true, uniqueness: true
       validates :amount, :tax_amount, :discount_amount, :total_amount, presence: true,
