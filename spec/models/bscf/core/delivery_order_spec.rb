@@ -5,7 +5,6 @@ module Bscf
     RSpec.describe DeliveryOrder, type: :model do
       attributes = [
         { pickup_address: :belong_to },
-        { dropoff_address: :belong_to },
         { driver_phone: :presence },
         { status: :presence },
         { estimated_delivery_time: :presence }

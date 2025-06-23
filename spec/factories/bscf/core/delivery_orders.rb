@@ -1,7 +1,6 @@
 FactoryBot.define do
   factory :delivery_order, class: 'Bscf::Core::DeliveryOrder' do
     association :pickup_address, factory: :address
-    association :dropoff_address, factory: :address
     association :driver, factory: :user
 
     driver_phone { Faker::PhoneNumber.phone_number }

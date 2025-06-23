@@ -5,6 +5,7 @@ module Bscf
       belongs_to :ordered_to, class_name: "Bscf::Core::User", optional: true
       belongs_to :quotation, optional: true
       belongs_to :delivery_order, optional: true
+      belongs_to :drop_off_address, class_name: "Bscf::Core::Address", optional: true
       has_many :order_items, dependent: :destroy
       validates :order_type, :status, presence: true
 

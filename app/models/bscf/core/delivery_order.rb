@@ -3,7 +3,6 @@ module Bscf
     class DeliveryOrder < ApplicationRecord
       has_many :orders
       belongs_to :pickup_address, class_name: "Bscf::Core::Address"
-      belongs_to :dropoff_address, class_name: "Bscf::Core::Address"
       belongs_to :driver, class_name: "Bscf::Core::User", optional: true
 
       has_many :delivery_order_items, dependent: :destroy

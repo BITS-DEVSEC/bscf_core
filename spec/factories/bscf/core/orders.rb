@@ -7,5 +7,6 @@ FactoryBot.define do
     status { :draft }
     total_amount { Faker::Number.between(from: 100, to: 1000) }
     delivery_order { nil }
+    association :drop_off_address, factory: :address
   end
 end

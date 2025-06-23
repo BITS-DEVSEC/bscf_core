@@ -8,6 +8,7 @@ module Bscf
         { ordered_by: [ { belong_to: [ [ :optional, nil ] ] } ] },
         { ordered_to: [ { belong_to: [ [ :optional, nil ] ] } ] },
         { delivery_order: [ { belong_to: [ [ :optional, nil ] ] } ] },
+        { drop_off_address: [ { belong_to: [ [ :optional, nil ] ] } ] },
         { order_type: :presence },
         { status: :presence }
       ]

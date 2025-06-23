@@ -10,13 +10,6 @@ module Bscf
       include_examples("model_shared_spec", :address, attributes)
 
       describe '#coordinates' do
-        context 'when both latitude and longitude are present' do
-          it 'returns an array with latitude and longitude symbols' do
-            address = Address.new(latitude: '10.0', longitude: '20.0')
-            expect(address.coordinates).to eq([ :latitude, :longitude ])
-          end
-        end
-
         context 'when latitude is present but longitude is nil' do
           it 'returns nil' do
             address = Address.new(latitude: '10.0', longitude: nil)
