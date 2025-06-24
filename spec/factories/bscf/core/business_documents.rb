@@ -5,6 +5,7 @@ FactoryBot.define do
     document_name { "Business License" }
     document_description { "Official business license document" }
     is_verified { false }
+    document_type { 1 }
 
     after(:build) do |document|
       document.file.attach(
