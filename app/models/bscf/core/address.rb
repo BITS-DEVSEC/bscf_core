@@ -11,7 +11,7 @@ module Bscf
       validates :latitude, :longitude, presence: true, if: :requires_coordinates?
 
       def coordinates
-        [latitude.to_f, longitude.to_f] if latitude.present? && longitude.present?
+        [ latitude.to_f, longitude.to_f ] if latitude.present? && longitude.present?
       end
 
       def full_address
