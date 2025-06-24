@@ -15,6 +15,8 @@ module Bscf
       scope :verified, -> { where(is_verified: true) }
       scope :unverified, -> { where(is_verified: false) }
 
+      enum :document_type, { business_license: 0, delegation_letter: 1, drivers_license: 2, libre: 3}
+
       private
 
       def format_document_name
