@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_23_115615) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_24_062746) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -54,7 +54,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_23_115615) do
   end
 
   create_table "bscf_core_business_documents", force: :cascade do |t|
-    t.bigint "business_id", null: false
+    t.bigint "user_id", null: false
     t.string "document_number", null: false
     t.string "document_name", null: false
     t.string "document_description"
@@ -62,7 +62,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_23_115615) do
     t.boolean "is_verified", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["business_id"], name: "index_bscf_core_business_documents_on_business_id"
+    t.index ["user_id"], name: "index_bscf_core_business_documents_on_user_id"
   end
 
   create_table "bscf_core_businesses", force: :cascade do |t|
@@ -414,7 +414,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_23_115615) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "bscf_core_business_documents", "bscf_core_businesses", column: "business_id"
+  add_foreign_key "bscf_core_business_documents", "bscf_core_users", column: "user_id"
   add_foreign_key "bscf_core_businesses", "bscf_core_users", column: "user_id"
   add_foreign_key "bscf_core_delivery_order_items", "bscf_core_addresses", column: "dropoff_address_id"
   add_foreign_key "bscf_core_delivery_order_items", "bscf_core_addresses", column: "pickup_address_id"
