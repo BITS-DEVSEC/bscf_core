@@ -1,14 +1,13 @@
 module Bscf
   module Core
     class BusinessDocument < ApplicationRecord
-      belongs_to :business
+      belongs_to :user
       has_one_attached :file
 
       before_validation :format_document_name
 
       validates :document_number, presence: true
       validates :document_name, presence: true
-      validates :business_id, presence: true
       validates :verified_at, presence: true, if: :is_verified?
       validates :file, presence: true
       validate :block_executable_files
