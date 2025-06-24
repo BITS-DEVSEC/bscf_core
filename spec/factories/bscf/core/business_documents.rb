@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :business_document, class: 'Bscf::Core::BusinessDocument' do
-    association :business, factory: :business
+    user
     document_number { "DOC-#{SecureRandom.hex(4).upcase}" }
     document_name { "Business License" }
     document_description { "Official business license document" }

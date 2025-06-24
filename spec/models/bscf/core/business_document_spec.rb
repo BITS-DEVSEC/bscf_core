@@ -6,7 +6,7 @@ module Bscf
       attributes = [
         { document_number: :presence },
         { document_name: :presence },
-        { business: :belong_to },
+        { user: :belong_to },
         { file: :presence }
       ]
 
@@ -22,10 +22,10 @@ module Bscf
       end
 
       describe 'verified status' do
-        let(:business) { create(:business) }
+        let(:user) { create(:user) }
         let(:document) {
           build(:business_document,
-            business: business,
+            user: user,
             is_verified: true,
             file: Rack::Test::UploadedFile.new(
               StringIO.new('test content'),
