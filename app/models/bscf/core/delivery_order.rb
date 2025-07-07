@@ -37,10 +37,10 @@ module Bscf
         return nil unless pickup_address&.coordinates.present?
 
         # Get all delivery order items with dropoff addresses
-        items_with_dropoffs = delivery_order_items.includes(:dropoff_address)
-                                                  .where.not(dropoff_address: nil)
+        items_with_dropoffs = orders.includes(:drop_off_address)
+                                                  .where.not(drop_off_address: nil)
 
-        dropoff_addresses = items_with_dropoffs.map(&:dropoff_address).compact.uniq
+        dropoff_addresses = items_with_dropoffs.map(&:drop_off_address).compact.uniq
         return nil if dropoff_addresses.empty?
 
         # Check if all dropoff addresses have coordinates
@@ -51,7 +51,7 @@ module Bscf
         route_data = gebeta_service.optimize_route(pickup_address, dropoff_addresses)
 
         # Return nil if route_data is empty or doesn't have waypoints
-        return nil if route_data.blank? || !route_data.key?("waypoints")
+        return nil if route_data.blank? || !route_data.key?("directions")
 
         # Cache the result if needed
         # Rails.cache.write("delivery_order_route_#{id}", route_data, expires_in: 1.hour)
