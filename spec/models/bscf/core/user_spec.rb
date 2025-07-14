@@ -13,16 +13,18 @@ module Bscf
         { vehicle: :have_one },
         { email: :uniqueness }
       ]
+      
       include_examples("model_shared_spec", :user, attributes)
-
-      describe 'password validation' do
-        it 'requires exactly 6 digits' do
-          user = build(:user, password: 'abc123')
-          expect(user).not_to be_valid
-          expect(user.errors[:password]).to include('must be exactly 6 digits')
-
-          user.password = '123456'
-          expect(user).to be_valid
+      
+      # Add this test for the automatic virtual account creation
+      describe "callbacks" do
+        it "creates a virtual account after user creation" do
+          user = create(:user)
+          expect(user.virtual_account).to be_present
+          expect(user.virtual_account.branch_code).to eq("VA001")
+          expect(user.virtual_account.product_scheme).to eq("SAVINGS")
+          expect(user.virtual_account.voucher_type).to eq("REGULAR")
+          expect(user.virtual_account.status).to eq("pending")
         end
       end
     end

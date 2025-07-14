@@ -19,6 +19,20 @@ module Bscf
         approved: 1,
         rejected: 2
       }
+
+      after_save :update_virtual_account_status, if: :saved_change_to_kyc_status?
+
+      private
+
+      def update_virtual_account_status
+        return unless user&.virtual_account.present?
+        
+        if kyc_status == 'approved'
+          user.virtual_account.update(status: :active)
+        elsif kyc_status == 'rejected'
+          user.virtual_account.update(status: :suspended)
+        end
+      end
     end
   end
 end
