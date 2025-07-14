@@ -2,13 +2,13 @@ FactoryBot.define do
   factory :voucher, class: 'Bscf::Core::Voucher' do
     association :issued_by, factory: :user
 
-    after(:build) do |voucher|
-      create(:virtual_account, user: voucher.issued_by, balance: 1000.0) unless voucher.issued_by.virtual_account
+    before(:create) do |voucher|
+      create(:virtual_account, user: voucher.issued_by, balance: 10000.0)
     end
 
     full_name { Faker::Name.name }
     phone_number { Faker::PhoneNumber.cell_phone }
-    amount { Faker::Number.decimal(l_digits: 3, r_digits: 2) }
+    amount { 100 }
     expires_at { 30.days.from_now }
     status { :pending }
 
