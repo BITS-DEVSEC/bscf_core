@@ -1,5 +1,5 @@
 module Bscf
   module Core
-    VERSION = "0.4.91"
+    VERSION = "0.4.92"
   end
 end
