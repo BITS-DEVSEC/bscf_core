@@ -28,7 +28,6 @@ module Bscf
                 },
                 if: :password_required?
 
-      after_create :create_virtual_account
 
       private
 
@@ -39,9 +38,9 @@ module Bscf
       def create_virtual_account
         VirtualAccount.create!(
           user: self,
-          branch_code: "VA#{SecureRandom.hex(4).upcase}",  
-          product_scheme: "SAVINGS", 
-          voucher_type: "REGULAR", 
+          branch_code: "VA#{SecureRandom.hex(4).upcase}",
+          product_scheme: "SAVINGS",
+          voucher_type: "REGULAR",
           balance: 0.0,
           interest_rate: 2.5,
           interest_type: :simple,
