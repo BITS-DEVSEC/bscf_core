@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_29_171506) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_24_122210) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -172,18 +172,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_29_171506) do
     t.index ["user_id"], name: "index_bscf_core_marketplace_listings_on_user_id"
   end
 
-  create_table "bscf_core_notifications", force: :cascade do |t|
-    t.string "recipient_type", null: false
-    t.bigint "recipient_id", null: false
-    t.string "type", null: false
-    t.datetime "read_at"
-    t.json "data"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["recipient_type", "recipient_id"], name: "idx_on_recipient_type_recipient_id_76d2f93d34"
-    t.index ["recipient_type", "recipient_id"], name: "index_bscf_core_notifications_on_recipient"
-  end
-
   create_table "bscf_core_order_items", force: :cascade do |t|
     t.bigint "order_id", null: false
     t.bigint "product_id", null: false
@@ -241,19 +229,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_29_171506) do
     t.datetime "updated_at", null: false
     t.index ["category_id"], name: "index_bscf_core_products_on_category_id"
     t.index ["sku"], name: "index_bscf_core_products_on_sku", unique: true
-  end
-
-  create_table "bscf_core_push_tokens", force: :cascade do |t|
-    t.string "token", null: false
-    t.string "device_id", null: false
-    t.string "platform", null: false
-    t.boolean "active", default: true
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["device_id"], name: "index_bscf_core_push_tokens_on_device_id", unique: true
-    t.index ["token"], name: "index_bscf_core_push_tokens_on_token", unique: true
-    t.index ["user_id"], name: "index_bscf_core_push_tokens_on_user_id"
   end
 
   create_table "bscf_core_quotation_items", force: :cascade do |t|
@@ -465,7 +440,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_29_171506) do
   add_foreign_key "bscf_core_payments", "bscf_core_invoices", column: "invoice_id"
   add_foreign_key "bscf_core_payments", "bscf_core_virtual_account_transactions", column: "virtual_account_transaction_id"
   add_foreign_key "bscf_core_products", "bscf_core_categories", column: "category_id"
-  add_foreign_key "bscf_core_push_tokens", "bscf_core_users", column: "user_id"
   add_foreign_key "bscf_core_quotation_items", "bscf_core_products", column: "product_id"
   add_foreign_key "bscf_core_quotation_items", "bscf_core_quotations", column: "quotation_id"
   add_foreign_key "bscf_core_quotation_items", "bscf_core_rfq_items", column: "rfq_item_id"
