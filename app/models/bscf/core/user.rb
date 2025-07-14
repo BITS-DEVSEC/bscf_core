@@ -39,11 +39,10 @@ module Bscf
       def create_virtual_account
         VirtualAccount.create!(
           user: self,
-          branch_code: "VA001",  
+          branch_code: "VA#{SecureRandom.hex(4).upcase}",  
           product_scheme: "SAVINGS", 
           voucher_type: "REGULAR", 
           balance: 0.0,
-          locked_amount: 0.0,
           interest_rate: 2.5,
           interest_type: :simple,
           status: :pending,
