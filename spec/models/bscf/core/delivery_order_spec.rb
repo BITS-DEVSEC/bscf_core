@@ -120,20 +120,18 @@ module Bscf
         before do
           # Mock the GebetaMapsService
           allow(Bscf::Core::GebetaMapsService).to receive(:new).and_return(gebeta_service)
-          # Ensure addresses have coordinates
-          allow_any_instance_of(Address).to receive(:coordinates).and_return([ 0.0, 0.0 ])
         end
 
         it 'returns an array of item IDs in optimized order' do
-          item1 = create(:delivery_order_item, delivery_order: delivery_order)
-          item2 = create(:delivery_order_item, delivery_order: delivery_order)
-
-          # Mock different coordinates for testing
-          allow(item1.dropoff_address).to receive(:coordinates).and_return([ 1.0, 1.0 ])
-          allow(item2.dropoff_address).to receive(:coordinates).and_return([ 2.0, 2.0 ])
+          order = create(:order, delivery_order: delivery_order)
+          order_item1 = create(:order_item, order: order)
+          order_item2 = create(:order_item, order: order)
+          create(:delivery_order_item, delivery_order: delivery_order, order_item: order_item1)
+          create(:delivery_order_item, delivery_order: delivery_order, order_item: order_item2)
 
           # Mock the service response
           allow(gebeta_service).to receive(:optimize_route).and_return({
+            "directions" => true,
             "waypoints" => [
               { "waypoint_index" => 0 },
               { "waypoint_index" => 1 }
