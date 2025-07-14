@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bscf-core (0.4.92)
+    bscf-core (0.4.93)
       active_model_serializers
       ancestry (~> 4.1.0)
       bcrypt (~> 3.1)
