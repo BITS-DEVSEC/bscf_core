@@ -15,7 +15,7 @@ module Bscf
       end
 
       def full_address
-        %i[house_number woreda sub_city city].compact.join(", ")
+        [ house_number, woreda, sub_city, city ].reject(&:blank?).join(", ")
       end
 
       private

@@ -112,56 +112,6 @@ module Bscf
           expect(item2.position).to eq(2)
         end
       end
-
-      describe '#optimized_route' do
-        let(:delivery_order) { create(:delivery_order) }
-        let(:gebeta_service) { instance_double("Bscf::Core::GebetaMapsService") }
-
-        before do
-          # Mock the GebetaMapsService
-          allow(Bscf::Core::GebetaMapsService).to receive(:new).and_return(gebeta_service)
-        end
-
-        it 'returns an array of item IDs in optimized order' do
-          order = create(:order, delivery_order: delivery_order)
-          order_item1 = create(:order_item, order: order)
-          order_item2 = create(:order_item, order: order)
-          create(:delivery_order_item, delivery_order: delivery_order, order_item: order_item1)
-          create(:delivery_order_item, delivery_order: delivery_order, order_item: order_item2)
-
-          # Mock the service response
-          allow(gebeta_service).to receive(:optimize_route).and_return({
-            "directions" => true,
-            "waypoints" => [
-              { "waypoint_index" => 0 },
-              { "waypoint_index" => 1 }
-            ]
-          })
-
-          expect(delivery_order.optimized_route).to be_a(Hash)
-          expect(delivery_order.optimized_route).to have_key("waypoints")
-        end
-
-        it 'returns empty array if pickup address has no coordinates' do
-          allow(delivery_order.pickup_address).to receive(:coordinates).and_return(nil)
-          expect(delivery_order.optimized_route).to be_nil
-        end
-
-        it 'returns empty array if no items have dropoff addresses' do
-          create(:delivery_order_item, delivery_order: delivery_order, dropoff_address: nil)
-          expect(delivery_order.optimized_route).to be_nil
-        end
-
-        it 'returns empty array if any dropoff address has no coordinates' do
-          item = create(:delivery_order_item, delivery_order: delivery_order)
-          allow(item.dropoff_address).to receive(:coordinates).and_return(nil)
-
-          # Set up the mock to handle the expected call
-          allow(gebeta_service).to receive(:optimize_route).and_return({})
-
-          expect(delivery_order.optimized_route).to be_nil
-        end
-      end
     end
   end
 end

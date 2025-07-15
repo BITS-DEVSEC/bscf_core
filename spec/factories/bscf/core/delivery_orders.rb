@@ -11,5 +11,6 @@ FactoryBot.define do
     delivery_start_time { nil }
     delivery_end_time { nil }
     status { :pending }
+    optimized_route { Faker::Json.shallow_json }
   end
 end
