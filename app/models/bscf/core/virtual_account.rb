@@ -79,11 +79,11 @@ module Bscf
         last_account = self.class.maximum(:account_number)
         last_seq = last_account ? last_account[-6..-1].to_i : 0
         seq = (last_seq + 1).to_s.rjust(6, "0")
-        
+
         branch_part = branch_code.to_s.rjust(3, "0")[0..2]
         product_part = map_product_scheme_to_digit(product_scheme)
         voucher_part = map_voucher_type_to_digit(voucher_type)
-        
+
         self.account_number = "#{branch_part}#{product_part}#{voucher_part}#{seq}"
       end
 

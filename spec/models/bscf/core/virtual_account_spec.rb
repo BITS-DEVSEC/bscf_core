@@ -50,30 +50,61 @@ module Bscf
       end
 
       describe '#generate_account_number' do
-        let(:virtual_account) { build(:virtual_account) }
+        before { VirtualAccount.delete_all }
 
-        it 'generates account number on create' do
-          expect(virtual_account.account_number).to be_nil
-          virtual_account.save
-          expect(virtual_account.account_number).to be_present
-          expect(virtual_account.account_number).to match(/\ABR001SAVINGSREGULAR\d{6}\z/)
+        it 'generates unique account numbers' do
+          account1 = create(:virtual_account)
+          account2 = create(:virtual_account)
+          account3 = create(:virtual_account)
+
+          expect(account1.account_number).not_to eq(account2.account_number)
+          expect(account2.account_number).not_to eq(account3.account_number)
+          expect(account1.account_number).not_to eq(account3.account_number)
         end
 
-        it 'maintains existing account number' do
-          existing_number = 'BR001SAVINGSREGULAR000001'
-          virtual_account.account_number = existing_number
-          virtual_account.save
-          expect(virtual_account.account_number).to eq(existing_number)
+        it 'generates sequential account numbers' do
+          account1 = create(:virtual_account)
+          account2 = create(:virtual_account)
+          account3 = create(:virtual_account)
+
+          seq1 = account1.account_number[-6..-1].to_i
+          seq2 = account2.account_number[-6..-1].to_i
+          seq3 = account3.account_number[-6..-1].to_i
+
+          expect(seq2).to eq(seq1 + 1)
+          expect(seq3).to eq(seq2 + 1)
         end
 
-        it 'increments sequence number' do
-          first_account = create(:virtual_account)
-          second_account = create(:virtual_account)
+        it 'generates account numbers with correct 11-digit format (all numbers)' do
+          account = create(:virtual_account, branch_code: '001', product_scheme: 'SAVINGS', voucher_type: 'REGULAR')
 
-          first_seq = first_account.account_number[-6..-1].to_i
-          second_seq = second_account.account_number[-6..-1].to_i
+          expect(account.account_number).to match(/\A\d{11}\z/)
+          expect(account.account_number.length).to eq(11)
 
-          expect(second_seq).to eq(first_seq + 1)
+          expect(account.account_number).to match(/\A[0-9]+\z/)
+        end
+
+        it 'formats different account types correctly' do
+          savings_account = create(:virtual_account, branch_code: '001', product_scheme: 'SAVINGS', voucher_type: 'REGULAR')
+          current_account = create(:virtual_account, branch_code: '002', product_scheme: 'CURRENT', voucher_type: 'SPECIAL')
+          loan_account = create(:virtual_account, branch_code: '003', product_scheme: 'LOAN', voucher_type: 'TEMPORARY')
+
+          [ savings_account, current_account, loan_account ].each do |account|
+            expect(account.account_number).to match(/\A\d{11}\z/)
+            expect(account.account_number.length).to eq(11)
+          end
+
+          expect(savings_account.account_number[0..4]).to eq('00111')
+          expect(current_account.account_number[0..4]).to eq('00222')
+          expect(loan_account.account_number[0..4]).to eq('00333')
+        end
+
+        it 'maintains existing account number if already set' do
+          existing_number = '12345678901'
+          account = build(:virtual_account, account_number: existing_number)
+          account.save
+
+          expect(account.account_number).to eq(existing_number)
         end
       end
 
