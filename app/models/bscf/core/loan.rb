@@ -1,7 +1,7 @@
 module Bscf::Core
   class Loan < ApplicationRecord
-    belongs_to :virtual_account, class_name: 'Bscf::Core::VirtualAccount'
-    belongs_to :disbursement_transaction, class_name: 'Bscf::Core::VirtualAccountTransaction'
+    belongs_to :virtual_account, class_name: "Bscf::Core::VirtualAccount"
+    belongs_to :disbursement_transaction, class_name: "Bscf::Core::VirtualAccountTransaction"
 
     enum :status, { disbursed: 0, late: 1, paid: 2 }
 

@@ -5,9 +5,9 @@ module Bscf::Core
       attributes = [
         { virtual_account: :belong_to },
         { disbursement_transaction: :belong_to },
-        { principal_amount: [:presence, :numericality] },
-        { interest_amount: [:presence, :numericality] },
-        { unpaid_balance: [:presence, :numericality] },
+        { principal_amount: [ :presence, :numericality ] },
+        { interest_amount: [ :presence, :numericality ] },
+        { unpaid_balance: [ :presence, :numericality ] },
         { status: :presence },
         { due_date: :presence }
       ]
