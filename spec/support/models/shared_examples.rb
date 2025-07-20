@@ -14,7 +14,6 @@ module Bscf
 
     RSpec.shared_examples "model_shared_spec" do |factory, attribs, subj = true|
       subject { create(factory) } if subj
-
       it "has a valid factory" do
         expect(create(factory)).to be_valid
       end

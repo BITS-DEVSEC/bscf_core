@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_20_123239) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_20_131241) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -153,6 +153,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_20_123239) do
     t.datetime "updated_at", null: false
     t.index [ "invoice_number" ], name: "index_bscf_core_invoices_on_invoice_number", unique: true
     t.index [ "order_id" ], name: "index_bscf_core_invoices_on_order_id"
+  end
+
+  create_table "bscf_core_loan_repayments", force: :cascade do |t|
+    t.bigint "loan_id", null: false
+    t.bigint "repayment_transaction_id", null: false
+    t.float "amount", null: false
+    t.date "payment_date", default: "2025-07-20", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index [ "loan_id" ], name: "index_bscf_core_loan_repayments_on_loan_id"
+    t.index [ "repayment_transaction_id" ], name: "index_bscf_core_loan_repayments_on_repayment_transaction_id"
   end
 
   create_table "bscf_core_loans", force: :cascade do |t|
@@ -442,6 +453,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_20_123239) do
   add_foreign_key "bscf_core_invoice_items", "bscf_core_invoices", column: "invoice_id"
   add_foreign_key "bscf_core_invoice_items", "bscf_core_order_items", column: "order_item_id"
   add_foreign_key "bscf_core_invoices", "bscf_core_orders", column: "order_id"
+  add_foreign_key "bscf_core_loan_repayments", "bscf_core_loans", column: "loan_id"
+  add_foreign_key "bscf_core_loan_repayments", "bscf_core_virtual_account_transactions", column: "repayment_transaction_id"
   add_foreign_key "bscf_core_loans", "bscf_core_virtual_account_transactions", column: "disbursement_transaction_id"
   add_foreign_key "bscf_core_loans", "bscf_core_virtual_accounts", column: "virtual_account_id"
   add_foreign_key "bscf_core_marketplace_listings", "bscf_core_addresses", column: "address_id"

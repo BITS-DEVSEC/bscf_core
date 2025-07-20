@@ -94,6 +94,17 @@ example_id                                                            | status |
 ./spec/models/bscf/core/invoice_spec.rb[1:15:3]                       | passed | 0.15589 seconds |
 ./spec/models/bscf/core/invoice_spec.rb[1:15:4]                       | passed | 0.15373 seconds |
 ./spec/models/bscf/core/invoice_spec.rb[1:16:1]                       | passed | 0.1634 seconds  |
+./spec/models/bscf/core/loan_repayment_spec.rb[1:1]                   | passed | 0.10331 seconds |
+./spec/models/bscf/core/loan_repayment_spec.rb[1:2]                   | passed | 3.31 seconds    |
+./spec/models/bscf/core/loan_repayment_spec.rb[1:3]                   | passed | 0.10286 seconds |
+./spec/models/bscf/core/loan_repayment_spec.rb[1:4]                   | passed | 0.09491 seconds |
+./spec/models/bscf/core/loan_repayment_spec.rb[1:5]                   | passed | 0.15043 seconds |
+./spec/models/bscf/core/loan_repayment_spec.rb[1:6]                   | passed | 0.10519 seconds |
+./spec/models/bscf/core/loan_repayment_spec.rb[1:7:1]                 | passed | 0.06144 seconds |
+./spec/models/bscf/core/loan_repayment_spec.rb[1:7:2]                 | passed | 0.10253 seconds |
+./spec/models/bscf/core/loan_repayment_spec.rb[1:7:3]                 | passed | 0.10585 seconds |
+./spec/models/bscf/core/loan_repayment_spec.rb[1:7:4]                 | passed | 0.09855 seconds |
+./spec/models/bscf/core/loan_repayment_spec.rb[1:7:5]                 | passed | 0.06413 seconds |
 ./spec/models/bscf/core/loan_spec.rb[1:1]                             | passed | 0.06313 seconds |
 ./spec/models/bscf/core/loan_spec.rb[1:2]                             | passed | 0.05924 seconds |
 ./spec/models/bscf/core/loan_spec.rb[1:3]                             | passed | 0.06065 seconds |
