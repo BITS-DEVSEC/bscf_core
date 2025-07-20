@@ -76,9 +76,33 @@ module Bscf
       def generate_account_number
         return if account_number.present?
 
-        last_seq = self.class.maximum(:account_number).to_s[-6..-1].to_i
+        last_account = self.class.maximum(:account_number)
+        last_seq = last_account ? last_account[-6..-1].to_i : 0
         seq = (last_seq + 1).to_s.rjust(6, "0")
-        self.account_number = "#{branch_code}#{product_scheme}#{voucher_type}#{seq}"
+        
+        branch_part = branch_code.to_s.rjust(3, "0")[0..2]
+        product_part = map_product_scheme_to_digit(product_scheme)
+        voucher_part = map_voucher_type_to_digit(voucher_type)
+        
+        self.account_number = "#{branch_part}#{product_part}#{voucher_part}#{seq}"
+      end
+
+      def map_product_scheme_to_digit(scheme)
+        case scheme
+        when "SAVINGS" then "1"
+        when "CURRENT" then "2"
+        when "LOAN" then "3"
+        else "0"
+        end
+      end
+
+      def map_voucher_type_to_digit(type)
+        case type
+        when "REGULAR" then "1"
+        when "SPECIAL" then "2"
+        when "TEMPORARY" then "3"
+        else "0"
+        end
       end
 
       def transfer_to!(to_account, amount)
