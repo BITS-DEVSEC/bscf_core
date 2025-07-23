@@ -33,6 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "noticed", "~> 1.6"
   spec.add_dependency "rails", "~> 8.0", ">= 8.0.2"
   spec.add_dependency "ransack"
+  spec.add_dependency "pundit"
   spec.add_development_dependency "database_cleaner-active_record"
   spec.add_development_dependency "factory_bot_rails"
   spec.add_development_dependency "faker"

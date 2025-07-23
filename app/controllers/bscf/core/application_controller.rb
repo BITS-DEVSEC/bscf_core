@@ -1,16 +1,12 @@
 module Bscf
   module Core
     class ApplicationController < ActionController::API
+      include Pundit::Authorization
+
       private
 
       def is_authenticated
         render json: { error: "Not authenticated" }, status: :unauthorized unless current_user
-      end
-
-      def is_allowed
-        user_role = UserRole.find_by(user: current_user)
-        role = Role.find(user_role.role_id)
-        render json: { error: "Not authorized" }, status: :ok unless role.name == "User" || role.name == "Admin"
       end
 
       def current_user
