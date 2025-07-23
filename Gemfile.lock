@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bscf-core (0.4.97)
+    bscf-core (0.4.98)
       active_model_serializers
       ancestry (~> 4.1.0)
       bcrypt (~> 3.1)
@@ -9,6 +9,7 @@ PATH
       image_processing (~> 1.12, >= 1.12.2)
       jwt (~> 2.7)
       noticed (~> 1.6)
+      pundit
       rails (~> 8.0, >= 8.0.2)
       ransack
 
@@ -244,6 +245,8 @@ GEM
     public_suffix (6.0.2)
     puma (6.6.0)
       nio4r (~> 2.0)
+    pundit (2.5.0)
+      activesupport (>= 3.0.0)
     racc (1.8.1)
     rack (3.1.16)
     rack-session (2.1.1)
