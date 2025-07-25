@@ -2,6 +2,7 @@ module Bscf
   module Core
     class Engine < ::Rails::Engine
       isolate_namespace Bscf::Core
+      config.autoload_paths << File.expand_path("../../app/policies", __dir__)
       config.generators.api_only = true
 
       config.generators do |g|
