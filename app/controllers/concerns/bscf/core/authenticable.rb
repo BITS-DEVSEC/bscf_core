@@ -1,15 +1,13 @@
 module Bscf
   module Core
-    class ApplicationController < ActionController::API
-      include Pundit::Authorization
+    module Authenticable
+      extend ActiveSupport::Concern
 
-      rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+      included do
+        before_action :is_authenticated
+      end
 
       private
-
-      def user_not_authorized
-        render json: { error: "You are not authorized to perform this action." }, status: :unauthorized
-      end
 
       def is_authenticated
         render json: { error: "Not authenticated" }, status: :unauthorized unless current_user
