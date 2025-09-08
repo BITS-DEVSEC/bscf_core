@@ -7,7 +7,7 @@ PATH
       bcrypt (~> 3.1)
       httparty
       image_processing (~> 1.12, >= 1.12.2)
-      jwt (~> 2.7)
+      jwt (>= 2.7, < 4.0)
       noticed (~> 1.6)
       pundit
       rails (~> 8.0, >= 8.0.2)
@@ -168,7 +168,7 @@ GEM
       reline (>= 0.4.2)
     json (2.13.0)
     jsonapi-renderer (0.2.2)
-    jwt (2.10.2)
+    jwt (3.1.2)
       base64
     language_server-protocol (3.17.0.5)
     launchy (3.1.1)
